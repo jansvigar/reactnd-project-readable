@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaThList, FaCaretSquareODown, FaCaretSquareOUp, FaCommentingO, FaPlus } from 'react-icons/lib/fa';
+import { FaThList, FaCaretSquareODown, FaCaretSquareOUp, FaCommentingO, FaPlus, FaEdit, FaTimesCircle } from 'react-icons/lib/fa';
 import './App.css';
 
 App.propTypes = {
@@ -59,6 +59,8 @@ function App() {
                 <div className="post-footer">
                   <FaCommentingO />
                   <span className="post-comments-count"><a href="">{'2 comments'}</a></span>
+                  <span className="post-edit-link"><FaEdit /><a href="">{'Edit'}</a></span>
+                  <span className="post-delete-link"><FaTimesCircle /><a href="">{'Delete'}</a></span>
                 </div>
               </div>
             </div>
@@ -83,8 +85,9 @@ function App() {
                   <span>{'Posted by thingone on 08/24/2017 at 5:00PM'}</span>
                 </div>
                 <div className="post-footer">
-                  <FaCommentingO />
-                  <span className="post-comments-count"><a href="">{'4 comments'}</a></span>
+                  <span className="post-comments-count"><FaCommentingO /><a href="">{'4 comments'}</a></span>
+                  <span className="post-edit-link"><FaEdit /><a href="">{'Edit'}</a></span>
+                  <span className="post-delete-link"><FaTimesCircle /><a href="">{'Delete'}</a></span>
                 </div>
               </div>
             </div>
