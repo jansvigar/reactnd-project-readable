@@ -1,11 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { FaThList, FaCaretSquareODown, FaCaretSquareOUp, FaCommentingO, FaPlus, FaEdit, FaTimesCircle } from 'react-icons/lib/fa';
+import { FaCaretSquareODown, FaCaretSquareOUp, FaCommentingO, FaPlus, FaEdit, FaTimesCircle } from 'react-icons/lib/fa';
 import './App.css';
-
-App.propTypes = {
-  children: PropTypes.element.isRequired,
-};
+import CategoriesContainer from './CategoriesContainer';
 
 function App() {
   return (
@@ -15,14 +11,7 @@ function App() {
       </header>
       <div className="app-container">
         <div className="sidebar">
-          <nav className="nav">
-            <span className="nav-header">
-              <FaThList /> Categories
-            </span>
-            <a href="">React</a>
-            <a href="">Redux</a>
-            <a href="">Udacity</a>
-          </nav>
+          <CategoriesContainer />
         </div>
         <div className="inner-container">
           <div className="subheader">
@@ -99,7 +88,7 @@ function App() {
       </div>
       <footer className="app-footer">
         <span>Readable Project - Udacity React NanoDegree course<br />
-        © 2017 Jan Vigar All Rights Reserved
+          © 2017 Jan Vigar All Rights Reserved
         </span>
       </footer>
     </div>
