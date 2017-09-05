@@ -11,5 +11,6 @@
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "no-use-before-define": ["error", { "functions": false, "classes": true, "variables": true }],
     "import/prefer-default-export": "off",
+    "react/require-default-props": "off",
   }
 }

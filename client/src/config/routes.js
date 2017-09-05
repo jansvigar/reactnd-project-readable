@@ -1,10 +1,43 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-import App from '../containers/App';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import PostsListContainer from '../containers/PostsListContainer';
+import CategoriesListContainer from '../containers/CategoriesListContainer';
+import { Header, Footer, Sidebar } from '../components/Layouts';
+import '../index.css';
+
+const DefaultLayout = ({ component: Component, showSidebar = 'false', ...rest }) => (
+  <Route
+    {...rest}
+    render={matchProps => (
+      <div className="app">
+        <Header />
+        <div className="app-container">
+          {showSidebar === 'true' &&
+            (<Sidebar>
+              <CategoriesListContainer {...matchProps} />
+            </Sidebar>)}
+          <div className="inner-container">
+            <Component {...matchProps} />
+          </div>
+        </div>
+        <Footer />
+      </div>
+    )}
+  />
+);
+
+DefaultLayout.propTypes = {
+  component: PropTypes.func.isRequired,
+  showSidebar: PropTypes.string,
+};
 
 const routes = (
   <BrowserRouter>
-    <Route exact path="/" component={App} />
+    <Switch>
+      <DefaultLayout exact path="/:category?" showSidebar="true" component={PostsListContainer} />
+      <Route><div>Error</div></Route>
+    </Switch>
   </BrowserRouter>
 );
 
