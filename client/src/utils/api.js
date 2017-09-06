@@ -47,25 +47,14 @@ export const deletePostById = postId =>
   }).then(res => res.json())
     .then(data => data);
 
-export const upVotePost = postId =>
+export const votePost = (postId, option) =>
   fetch(`/posts/${postId}`, {
     method: 'POST',
     headers: {
       ...headers,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ option: 'upVote' }),
-  }).then(res => res.json())
-    .then(data => data);
-
-export const downVotePost = postId =>
-  fetch(`/posts/${postId}`, {
-    method: 'POST',
-    headers: {
-      ...headers,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ option: 'downVote' }),
+    body: JSON.stringify({ option }),
   }).then(res => res.json())
     .then(data => data);
 

@@ -1,39 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  FaCaretSquareODown, FaCaretSquareOUp,
   FaCommentingO, FaEdit,
   FaTimesCircle } from 'react-icons/lib/fa';
+import PostVoteScore from '../PostVoteScore/PostVoteScore';
 
 const Post = ({
-  onVoteUpClick,
-  onVoteDownClick,
-  voteScore,
+  id,
   category,
   title,
   author,
   timestamp,
 }) => (
   <div className="post">
-    <div className="post-score">
-      <span
-        role="button"
-        className="vote-control-up"
-        tabIndex="0"
-        onClick={onVoteUpClick}
-      >
-        <FaCaretSquareOUp />
-      </span>
-      <div className="vote-score"><span>{voteScore}</span></div>
-      <span
-        role="button"
-        tabIndex="0"
-        className="vote-control-down"
-        onClick={onVoteDownClick}
-      >
-        <FaCaretSquareODown />
-      </span>
-    </div>
+    <PostVoteScore postId={id} />
     <div className="post-content">
       <div className="post-categories">
         <span className="post-category">{category}</span>
@@ -54,9 +34,7 @@ const Post = ({
 );
 
 Post.propTypes = {
-  onVoteUpClick: PropTypes.func.isRequired,
-  onVoteDownClick: PropTypes.func.isRequired,
-  voteScore: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,

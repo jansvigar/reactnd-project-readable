@@ -18,7 +18,7 @@ const PostsList = ({ posts, category }) => (
     </div>
     <div className="list-posts">
       {posts.map(post => (
-        <Post {...post} />
+        <Post key={post.id} {...post} />
       ))}
 
     </div>
@@ -29,15 +29,8 @@ const PostsList = ({ posts, category }) => (
 );
 
 PostsList.propTypes = {
-  posts: PropTypes.shape({
-    onVoteUpClick: PropTypes.func.isRequired,
-    onVoteDownClick: PropTypes.func.isRequired,
-    voteScore: PropTypes.number.isRequired,
-    category: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    timestamp: PropTypes.number.isRequired,
-  }),
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  category: PropTypes.string.isRequired,
 };
 
 export default PostsList;

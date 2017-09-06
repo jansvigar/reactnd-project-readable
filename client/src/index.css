@@ -173,6 +173,7 @@ select:disabled::-ms-expand {
   flex-direction: column;
   font-size: 2em;
   justify-content: space-between;
+  align-items: center;
 }
 
 .vote-control-up, .vote-control-down {
