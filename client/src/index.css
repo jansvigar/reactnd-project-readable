@@ -201,10 +201,9 @@ select:disabled::-ms-expand {
   right: 25px;
 }
 
-.add-new-post button {
+.add-new-post a {
   display: block;
-  padding: 10px;
-  height: 50px;
+  padding: 15px 10px;
   font-size: 1em;
   color: white;
   border-radius: 10px;
@@ -212,17 +211,21 @@ select:disabled::-ms-expand {
   box-shadow: 1px 1px 0.5px 0.8px rgba(0, 0, 0, .2);
   border: 1px solid rgba(0,0,0,.2);
   cursor: pointer;
+  text-decoration: none;
 }
 
 @media (max-width: 560px) {
-  .add-new-post button {
+  .add-new-post a {
     font-size: 1.5em;
     border-radius: 50%;
+    padding: 5px 5px;
+    height:45px;
+    width: 45px;
+    text-align:center;
   }
 
-  .add-new-post button span {
+  .add-new-post a span {
     font-size: 0;
-
   }
 }
 

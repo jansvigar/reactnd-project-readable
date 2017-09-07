@@ -1,0 +1,80 @@
+button, input, select, textarea {
+    outline: none;
+}
+
+h1 {
+  margin-left: 10px;
+}
+
+hr {
+  margin: 25px 0 35px 0;
+}
+
+.post-form>div {
+  display: flex;
+  justify-content: center;
+  margin: 10px 5px;
+  font-size:16px;
+}
+
+.post-form>div>label {
+  font-weight: 700;
+  margin-right: 10px;
+  min-width: 100px;
+  text-align: right;
+  padding: 6px 9px;
+}
+
+.post-form>div>div {
+  flex: 1;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.post-form>div>div>* {
+  flex: 1;
+  font-size: 16px;
+  padding: 10px 10px;
+  margin: 3px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.post-form>div button {
+  margin: 10px;
+}
+
+.post-form>div button[type=submit] {
+    white-space: nowrap;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 20px;
+    color: #fff;
+    background-image: linear-gradient(#4f93ce,#285f8f);
+    border: 1px solid #285f8f;
+  }
+
+.post-form>div button[type=button] {
+    white-space: nowrap;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 20px;
+    color: #fff;
+    background-image: linear-gradient(#fff,#d5d5d5);
+    border: 1px solid #d5d5d5;
+    color: #000;
+  }
+
+.post-form>div button[type=button][disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.post-form>div button[type=submit][disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+}

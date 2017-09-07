@@ -9,7 +9,7 @@ export const closeModal = () => ({
   type: CLOSE_MODAL,
 });
 
-export default function modal(state = {}, action) {
+export default function modal(state = { isOpen: false }, action) {
   switch (action.type) {
     case OPEN_MODAL:
       return {

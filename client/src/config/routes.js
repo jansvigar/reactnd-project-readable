@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PostsListContainer from '../containers/PostsListContainer';
 import CategoriesListContainer from '../containers/CategoriesListContainer';
+import PostFormModal from '../containers/PostFormModal';
 import { Header, Footer, Sidebar } from '../components/Layouts';
 import '../index.css';
 
@@ -35,7 +36,18 @@ DefaultLayout.propTypes = {
 const routes = (
   <BrowserRouter>
     <Switch>
-      <DefaultLayout exact path="/:category?" showSidebar="true" component={PostsListContainer} />
+      <DefaultLayout
+        exact
+        path="/posts/new"
+        showSidebar="true"
+        component={PostFormModal}
+      />
+      <DefaultLayout
+        exact
+        path="/:category?"
+        showSidebar="true"
+        component={PostsListContainer}
+      />
       <Route><div>Error</div></Route>
     </Switch>
   </BrowserRouter>

@@ -23,7 +23,7 @@ const PostsList = ({ posts, category }) => (
 
     </div>
     <div className="add-new-post">
-      <button><FaPlus /> <span>Add new post</span></button>
+      <Link to="/posts/new"><FaPlus /><span>Add new post</span></Link>
     </div>
   </div>
 );
