@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
+import { FaClose } from 'react-icons/lib/fa';
+import './Modal.css';
 
 const customStyles = {
   content: {
     borderRadius: '8px',
     bottom: 'auto',
-    minHeight: '30rem',
     left: '50%',
     padding: '2rem',
     position: 'fixed',
@@ -17,7 +18,9 @@ const customStyles = {
     width: '80%',
     maxWidth: '40rem',
     boxShadow: '0.5px 0.5px 0.5px 0.6px rgba(0, 0, 0, .2)',
-    backgroundColor: 'rgba(249, 249, 249, 1)',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    maxHeight: 'calc(100vh - 50px)',
+    overflowY: 'auto',
   },
 };
 
@@ -28,6 +31,14 @@ const Modal = props => (
     contentLabel={props.contentLabel}
     style={customStyles}
   >
+    <span
+      role="button"
+      tabIndex="0"
+      className="modal-close-button"
+      onClick={props.closeModal}
+    >
+      <FaClose />
+    </span>
     {props.children}
   </ReactModal>
 );
