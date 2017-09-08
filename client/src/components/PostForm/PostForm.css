@@ -66,13 +66,22 @@ hr {
   position: relative;
 }
 
-.post-form>div>div>* {
+.post-form>div>div>*:first-child {
   flex: 1;
   font-size: 16px;
   padding: 10px 10px;
   margin: 3px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.post-form>div>div>*:first-child.has-error {
+  border: 1px solid rgb(255, 113, 113);
+}
+
+.post-form>div>div>.validation-error {
+  color: red;
+  font-weight: 400;
 }
 
 .post-form>div button {

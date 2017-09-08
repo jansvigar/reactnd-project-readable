@@ -4,12 +4,13 @@ import {
   getAllPosts as apiGetAllPosts,
   getPostsByCategory as apiGetPostsByCategory,
   votePost as apiVotePost,
+  addNewPost as apiAddNewPost,
 } from '../../utils/api';
 
 export const FETCHING_POSTS = 'FETCHING_POSTS';
 export const FETCHING_POSTS_SUCCESS = 'FETCHING_POSTS_SUCCESS';
 export const FETCHING_POSTS_ERROR = 'FETCHING_POSTS_ERROR';
-
+export const ADD_NEW_POST = 'ADD_NEW_POST';
 export const VOTE_POST = 'VOTE_POST';
 
 const fetchingPosts = category => ({
@@ -27,6 +28,11 @@ const fetchingPostsError = (error, category) => ({
   type: FETCHING_POSTS_ERROR,
   error: 'Error fetching posts',
   category,
+});
+
+const addNewPost = post => ({
+  type: ADD_NEW_POST,
+  post,
 });
 
 const votePost = (postId, option) => ({
@@ -50,13 +56,20 @@ export const votePostById = (postId, option, e) => {
   };
 };
 
-
 export const fetchAndHandlePosts = category => (dispatch) => {
   dispatch(fetchingPosts(category));
   const getPosts = category === 'all' ? apiGetAllPosts : apiGetPostsByCategory;
   getPosts(category)
     .then(data => dispatch(fetchingPostsSuccess(data, category)))
     .catch(error => dispatch(fetchingPostsError(error, category)));
+};
+
+export const savePost = post => (dispatch) => {
+  apiAddNewPost(post)
+    .then((data) => {
+      dispatch(addNewPost(data));
+    })
+    .catch(error => console.warn(error));
 };
 
 /* eslint no-param-reassign:
@@ -71,6 +84,14 @@ function byId(state = {}, action) {
         nextState[curPost.id] = curPost;
         return nextState;
       }, { ...state });
+    case ADD_NEW_POST:
+      return {
+        ...state,
+        [action.post.id]: {
+          ...state[action.post.id],
+          ...action.post,
+        },
+      };
     case VOTE_POST:
       return {
         ...state,

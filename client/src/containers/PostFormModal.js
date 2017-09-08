@@ -5,6 +5,7 @@ import Modal from '../components/Modal/Modal';
 import PostForm from '../components/PostForm/PostForm';
 import PostsListContainer from '../containers/PostsListContainer';
 import { openModal, closeModal } from '../redux/modules/modal';
+import { savePost } from '../redux/modules/posts';
 
 class PostFormModal extends Component {
   componentDidMount() {
@@ -25,7 +26,7 @@ class PostFormModal extends Component {
           closeModal={this.handleCloseModal}
           isOpen={this.props.isOpen}
         >
-          <PostForm />
+          <PostForm onSavePost={this.props.savePost} />
         </Modal>
       </div>
     );
@@ -38,6 +39,7 @@ PostFormModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  savePost: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -46,4 +48,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { openModal, closeModal })(PostFormModal);
+export default connect(mapStateToProps, { openModal, closeModal, savePost })(PostFormModal);

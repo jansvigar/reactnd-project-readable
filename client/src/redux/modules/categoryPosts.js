@@ -1,5 +1,8 @@
 import { combineReducers } from 'redux';
-import { FETCHING_POSTS, FETCHING_POSTS_SUCCESS, FETCHING_POSTS_ERROR } from './posts';
+import { FETCHING_POSTS,
+  FETCHING_POSTS_SUCCESS,
+  FETCHING_POSTS_ERROR,
+  ADD_NEW_POST } from './posts';
 
 function categoryPosts(category) {
   const ids = (state = [], action) => {
@@ -8,6 +11,11 @@ function categoryPosts(category) {
         return action.category === category
           ? action.posts.map(post => post.id)
           : state;
+      case ADD_NEW_POST:
+        return [
+          ...state,
+          action.post.id,
+        ];
       default:
         return state;
     }
