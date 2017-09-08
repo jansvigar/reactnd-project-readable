@@ -5,12 +5,14 @@ import {
   getPostsByCategory as apiGetPostsByCategory,
   votePost as apiVotePost,
   addNewPost as apiAddNewPost,
+  updatePost as apiUpdatePost,
 } from '../../utils/api';
 
 export const FETCHING_POSTS = 'FETCHING_POSTS';
 export const FETCHING_POSTS_SUCCESS = 'FETCHING_POSTS_SUCCESS';
 export const FETCHING_POSTS_ERROR = 'FETCHING_POSTS_ERROR';
 export const ADD_NEW_POST = 'ADD_NEW_POST';
+export const EDIT_POST = 'EDIT_POST';
 export const VOTE_POST = 'VOTE_POST';
 
 const fetchingPosts = category => ({
@@ -32,6 +34,11 @@ const fetchingPostsError = (error, category) => ({
 
 const addNewPost = post => ({
   type: ADD_NEW_POST,
+  post,
+});
+
+const editPost = post => ({
+  type: EDIT_POST,
   post,
 });
 
@@ -64,10 +71,20 @@ export const fetchAndHandlePosts = category => (dispatch) => {
     .catch(error => dispatch(fetchingPostsError(error, category)));
 };
 
-export const savePost = post => (dispatch) => {
+export const saveNewPost = post => (dispatch) => {
   apiAddNewPost(post)
     .then((data) => {
       dispatch(addNewPost(data));
+    })
+    .catch(error => console.warn(error));
+};
+
+export const updatePost = post => (dispatch) => {
+  console.log(post);
+  /* eslint-disable no-debugger */
+  apiUpdatePost(post)
+    .then((data) => {
+      dispatch(editPost(data));
     })
     .catch(error => console.warn(error));
 };
@@ -85,6 +102,7 @@ function byId(state = {}, action) {
         return nextState;
       }, { ...state });
     case ADD_NEW_POST:
+    case EDIT_POST:
       return {
         ...state,
         [action.post.id]: {
@@ -127,7 +145,7 @@ export default combineReducers({
 export const getIds = (state, category) => (state.byCategories[category]
   ? state.byCategories[category].ids
   : []);
-export const getPost = (state, id) => state.byId[id];
+export const getPost = (state, id) => (state.byId[id]);
 export const getIsFetching = (state, category) => (state.byCategories[category]
   ? state.byCategories[category].isFetching
   : false);

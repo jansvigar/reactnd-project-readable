@@ -62,7 +62,7 @@ const maxLength140 = maxLength(140);
 const maxLength500 = maxLength(500);
 
 class PostForm extends Component {
-  onSubmit = (values) => {
+  onSubmitNewPost = (values) => {
     const newPostData = {
       id: v4(),
       timestamp: Date.now(),
@@ -72,13 +72,18 @@ class PostForm extends Component {
     this.props.history.push('/');
   }
 
+  onSubmitEditPost = (values) => {
+    this.props.onUpdatePost(values);
+    this.props.history.push('/');
+  }
+
   render() {
-    const { handleSubmit, pristine, reset, submitting } = this.props;
+    const { handleSubmit, pristine, reset, submitting, match } = this.props;
     return (
       <div>
-        <h1>Add New Post</h1>
+        <h1>{match.params.id ? 'Edit Post' : 'Add New Post'}</h1>
         <hr />
-        <form className="post-form" onSubmit={handleSubmit(this.onSubmit)}>
+        <form className="post-form" onSubmit={handleSubmit(match.params.id ? this.onSubmitEditPost : this.onSubmitNewPost)}>
           <Field
             id="rdTitle"
             name="title"
@@ -122,7 +127,7 @@ class PostForm extends Component {
             Submit
             </button>
             <button type="button" disabled={pristine || submitting} onClick={reset}>
-            Clear
+            Reset
             </button>
           </div>
         </form>
@@ -137,7 +142,9 @@ PostForm.propTypes = {
   reset: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,
   onSavePost: PropTypes.func.isRequired,
+  onUpdatePost: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
 export default reduxForm({

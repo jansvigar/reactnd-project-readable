@@ -58,14 +58,14 @@ export const votePost = (postId, option) =>
   }).then(res => res.json())
     .then(data => data);
 
-export const updatePost = (postId, post) =>
-  fetch(`/posts/${postId}`, {
+export const updatePost = post =>
+  fetch(`/posts/${post.id}`, {
     method: 'PUT',
     headers: {
       ...headers,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ post }),
+    body: JSON.stringify({ ...post }),
   }).then(res => res.json())
     .then(data => data);
 

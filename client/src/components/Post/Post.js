@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import {
   FaCommentingO, FaEdit,
   FaTimesCircle } from 'react-icons/lib/fa';
@@ -26,7 +27,7 @@ const Post = ({
       </div>
       <div className="post-footer">
         <span className="post-comments-count"><FaCommentingO /><a href="">{'4 comments'}</a></span>
-        <span className="post-edit-link"><FaEdit /><a href="">{'Edit'}</a></span>
+        <span className="post-edit-link"><FaEdit /><Link to={`/posts/${id}/edit`}>{'Edit'}</Link></span>
         <span className="post-delete-link"><FaTimesCircle /><a href="">{'Delete'}</a></span>
       </div>
     </div>

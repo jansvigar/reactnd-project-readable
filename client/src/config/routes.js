@@ -44,6 +44,12 @@ const routes = (
       />
       <DefaultLayout
         exact
+        path="/posts/:id/edit"
+        showSidebar="true"
+        component={PostFormModal}
+      />
+      <DefaultLayout
+        exact
         path="/:category?"
         showSidebar="true"
         component={PostsListContainer}
