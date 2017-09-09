@@ -2,7 +2,8 @@ import { combineReducers } from 'redux';
 import { FETCHING_POSTS,
   FETCHING_POSTS_SUCCESS,
   FETCHING_POSTS_ERROR,
-  ADD_NEW_POST } from './posts';
+  ADD_NEW_POST,
+  DELETE_POST } from './posts';
 
 function categoryPosts(category) {
   const ids = (state = [], action) => {
@@ -12,10 +13,11 @@ function categoryPosts(category) {
           ? action.posts.map(post => post.id)
           : state;
       case ADD_NEW_POST:
-        return [
-          ...state,
-          action.post.id,
-        ];
+        return action.category === category
+          ? [...state, action.post.id]
+          : state;
+      case DELETE_POST:
+        return state.filter(id => id !== action.postId);
       default:
         return state;
     }

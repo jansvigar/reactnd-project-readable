@@ -44,8 +44,8 @@ export const deletePostById = postId =>
   fetch(`/posts/${postId}`, {
     method: 'DELETE',
     headers,
-  }).then(res => res.json())
-    .then(data => data);
+  })
+    .then(res => res);
 
 export const votePost = (postId, option) =>
   fetch(`/posts/${postId}`, {

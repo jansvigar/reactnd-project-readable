@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
   FaCommentingO, FaEdit,
   FaTimesCircle } from 'react-icons/lib/fa';
+import { convertUnixTimestampToDate } from '../../utils/helpers';
+import { disablePost as apiDisablePost } from '../../redux/modules/posts';
 import PostVoteScore from '../PostVoteScore/PostVoteScore';
 
 const Post = ({
@@ -12,27 +15,35 @@ const Post = ({
   title,
   author,
   timestamp,
-}) => (
-  <div className="post">
-    <PostVoteScore postId={id} />
-    <div className="post-content">
-      <div className="post-categories">
-        <span className="post-category">{category}</span>
-      </div>
-      <div className="post-title">
-        <h2>{title}</h2>
-      </div>
-      <div className="post-details">
-        <span>{`Posted by ${author} on ${timestamp}`}</span>
-      </div>
-      <div className="post-footer">
-        <span className="post-comments-count"><FaCommentingO /><a href="">{'4 comments'}</a></span>
-        <span className="post-edit-link"><FaEdit /><Link to={`/posts/${id}/edit`}>{'Edit'}</Link></span>
-        <span className="post-delete-link"><FaTimesCircle /><a href="">{'Delete'}</a></span>
+  disablePost,
+}) => {
+  const onDelete = (event) => {
+    event.preventDefault();
+    /* eslint-disable no-debugger */
+    disablePost(id, category);
+  };
+  return (
+    <div className="post">
+      <PostVoteScore postId={id} />
+      <div className="post-content">
+        <div className="post-categories">
+          <span className="post-category">{category}</span>
+        </div>
+        <div className="post-title">
+          <h2>{title}</h2>
+        </div>
+        <div className="post-details">
+          <span>{`Posted by ${author} on ${convertUnixTimestampToDate(timestamp)}`}</span>
+        </div>
+        <div className="post-footer">
+          <span className="post-comments-count"><FaCommentingO /><a href="">{'4 comments'}</a></span>
+          <span className="post-edit-link"><FaEdit /><Link to={`/posts/${id}/edit`}>{'Edit'}</Link></span>
+          <span className="post-delete-link"><FaTimesCircle /><a href="" role="button" tabIndex="0" onClick={onDelete}>{'Delete'}</a></span>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 Post.propTypes = {
   id: PropTypes.string.isRequired,
@@ -40,6 +51,7 @@ Post.propTypes = {
   title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
   timestamp: PropTypes.number.isRequired,
+  disablePost: PropTypes.func.isRequired,
 };
 
-export default Post;
+export default connect(null, { disablePost: apiDisablePost })(Post);

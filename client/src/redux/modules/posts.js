@@ -6,6 +6,7 @@ import {
   votePost as apiVotePost,
   addNewPost as apiAddNewPost,
   updatePost as apiUpdatePost,
+  deletePostById as apiDeletePost,
 } from '../../utils/api';
 
 export const FETCHING_POSTS = 'FETCHING_POSTS';
@@ -13,6 +14,7 @@ export const FETCHING_POSTS_SUCCESS = 'FETCHING_POSTS_SUCCESS';
 export const FETCHING_POSTS_ERROR = 'FETCHING_POSTS_ERROR';
 export const ADD_NEW_POST = 'ADD_NEW_POST';
 export const EDIT_POST = 'EDIT_POST';
+export const DELETE_POST = 'DELETE_POST';
 export const VOTE_POST = 'VOTE_POST';
 
 const fetchingPosts = category => ({
@@ -42,6 +44,12 @@ const editPost = post => ({
   post,
 });
 
+const deletePost = (postId, category) => ({
+  type: DELETE_POST,
+  postId,
+  category,
+});
+
 const votePost = (postId, option) => ({
   type: VOTE_POST,
   postId,
@@ -67,7 +75,9 @@ export const fetchAndHandlePosts = category => (dispatch) => {
   dispatch(fetchingPosts(category));
   const getPosts = category === 'all' ? apiGetAllPosts : apiGetPostsByCategory;
   getPosts(category)
-    .then(data => dispatch(fetchingPostsSuccess(data, category)))
+    .then((data) => {
+      dispatch(fetchingPostsSuccess(data, category));
+    })
     .catch(error => dispatch(fetchingPostsError(error, category)));
 };
 
@@ -79,8 +89,15 @@ export const saveNewPost = post => (dispatch) => {
     .catch(error => console.warn(error));
 };
 
+export const disablePost = (postId, category) => (dispatch) => {
+  apiDeletePost(postId)
+    .then(() => {
+      dispatch(deletePost(postId, category));
+    })
+    .catch(error => console.warn(error));
+};
+
 export const updatePost = post => (dispatch) => {
-  console.log(post);
   /* eslint-disable no-debugger */
   apiUpdatePost(post)
     .then((data) => {
@@ -110,6 +127,10 @@ function byId(state = {}, action) {
           ...action.post,
         },
       };
+    case DELETE_POST: {
+      const { [action.postId]: omit, ...rest } = state;
+      return { ...rest };
+    }
     case VOTE_POST:
       return {
         ...state,
@@ -132,6 +153,16 @@ function byCategories(state = {}, action) {
         ...state,
         [action.category]: categoryPosts(action.category)(state[action.category], action),
       };
+    case DELETE_POST: {
+      const categoryData = action.category
+        ? { [action.category]: categoryPosts(action.category)(state[action.category], action) }
+        : null;
+      return {
+        ...state,
+        all: categoryPosts('all')(state.all, action),
+        ...categoryData,
+      };
+    }
     default:
       return state;
   }

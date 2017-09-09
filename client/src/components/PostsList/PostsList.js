@@ -17,7 +17,7 @@ const PostsList = ({ posts, category }) => (
       </select>
     </div>
     <div className="list-posts">
-      {posts.map(post => (
+      {posts && posts.map(post => (
         <Post key={post.id} {...post} />
       ))}
 
