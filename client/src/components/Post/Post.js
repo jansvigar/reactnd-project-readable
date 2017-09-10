@@ -16,10 +16,11 @@ const Post = ({
   author,
   timestamp,
   disablePost,
+  body,
+  showBody,
 }) => {
   const onDelete = (event) => {
     event.preventDefault();
-    /* eslint-disable no-debugger */
     disablePost(id, category);
   };
   return (
@@ -30,11 +31,16 @@ const Post = ({
           <span className="post-category">{category}</span>
         </div>
         <div className="post-title">
-          <h2>{title}</h2>
+          <h2><Link to={`/${category}/${id}`}>{title}</Link></h2>
         </div>
         <div className="post-details">
           <span>{`Posted by ${author} on ${convertUnixTimestampToDate(timestamp)}`}</span>
         </div>
+        { showBody && (
+          <div className="post-body">
+            <p>{body}</p>
+          </div>)
+        }
         <div className="post-footer">
           <span className="post-comments-count"><FaCommentingO /><a href="">{'4 comments'}</a></span>
           <span className="post-edit-link"><FaEdit /><Link to={`/posts/${id}/edit`}>{'Edit'}</Link></span>
@@ -52,6 +58,8 @@ Post.propTypes = {
   author: PropTypes.string.isRequired,
   timestamp: PropTypes.number.isRequired,
   disablePost: PropTypes.func.isRequired,
+  body: PropTypes.string.isRequired,
+  showBody: PropTypes.bool,
 };
 
 export default connect(null, { disablePost: apiDisablePost })(Post);

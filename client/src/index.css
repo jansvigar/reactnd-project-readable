@@ -10,7 +10,7 @@ html, body, .root {
   height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, p {
   margin: 0;
   padding: 0;
 }
@@ -227,6 +227,14 @@ select:disabled::-ms-expand {
   .add-new-post a span {
     font-size: 0;
   }
+}
+
+.post-body {
+  background-color: rgb(245, 244, 244);
+  border: 1px solid rgb(120, 120, 120);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 5px 0;
 }
 
 .post-footer a {
