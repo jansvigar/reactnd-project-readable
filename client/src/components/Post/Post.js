@@ -15,6 +15,7 @@ const Post = ({
   title,
   author,
   timestamp,
+  comments,
   disablePost,
   body,
   showBody,
@@ -42,7 +43,7 @@ const Post = ({
           </div>)
         }
         <div className="post-footer">
-          <span className="post-comments-count"><FaCommentingO /><a href="">{'4 comments'}</a></span>
+          <span className="post-comments-count"><FaCommentingO /><a href="">{`${comments ? comments.length : '0'} Comments`}</a></span>
           <span className="post-edit-link"><FaEdit /><Link to={`/posts/${id}/edit`}>{'Edit'}</Link></span>
           <span className="post-delete-link"><FaTimesCircle /><a href="" role="button" tabIndex="0" onClick={onDelete}>{'Delete'}</a></span>
         </div>
@@ -58,6 +59,7 @@ Post.propTypes = {
   author: PropTypes.string.isRequired,
   timestamp: PropTypes.number.isRequired,
   disablePost: PropTypes.func.isRequired,
+  comments: PropTypes.array,
   body: PropTypes.string.isRequired,
   showBody: PropTypes.bool,
 };

@@ -8,6 +8,7 @@ import {
   updatePost as apiUpdatePost,
   deletePostById as apiDeletePost,
 } from '../../utils/api';
+import { FETCHING_COMMENTS_SUCCESS, fetchAndHandleComments } from './comments';
 
 export const FETCHING_POSTS = 'FETCHING_POSTS';
 export const FETCHING_POSTS_SUCCESS = 'FETCHING_POSTS_SUCCESS';
@@ -77,6 +78,9 @@ export const fetchAndHandlePosts = category => (dispatch) => {
   getPosts(category)
     .then((data) => {
       dispatch(fetchingPostsSuccess(data, category));
+      data.forEach((post) => {
+        dispatch(fetchAndHandleComments(post.id));
+      });
     })
     .catch(error => dispatch(fetchingPostsError(error, category)));
 };
@@ -139,6 +143,16 @@ function byId(state = {}, action) {
           voteScore: action.option === 'upVote'
             ? state[action.postId].voteScore + 1
             : state[action.postId].voteScore - 1,
+        },
+      };
+    case FETCHING_COMMENTS_SUCCESS:
+      return {
+        ...state,
+        [action.postId]: {
+          ...state[action.postId],
+          comments: [
+            ...action.comments.map(comment => comment.id),
+          ],
         },
       };
     default:
