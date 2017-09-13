@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FaCaretSquareODown, FaCaretSquareOUp } from 'react-icons/lib/fa';
-import { votePostById, getPostVoteScore } from '../../redux/modules/posts';
+import { votePostById, getPostVoteScore } from '../redux/modules/posts';
+import VoteScore from '../components/VoteScore/VoteScore';
 
 class PostVoteScore extends Component {
   handleVoteUpClick = event => this.props.votePostById(this.props.postId, 'upVote', event)
@@ -12,24 +12,12 @@ class PostVoteScore extends Component {
   render() {
     const { voteScore } = this.props;
     return (
-      <div className="post-score">
-        <span
-          role="button"
-          className="vote-control-up"
-          tabIndex="0"
-          onClick={this.handleVoteUpClick}
-        >
-          <FaCaretSquareOUp />
-        </span>
-        <div className="vote-score"><span>{voteScore}</span></div>
-        <span
-          role="button"
-          tabIndex="0"
-          className="vote-control-down"
-          onClick={this.handleVoteDownClick}
-        >
-          <FaCaretSquareODown />
-        </span>
+      <div>
+        <VoteScore
+          score={voteScore}
+          onVoteUp={this.handleVoteUpClick}
+          onVoteDown={this.handleVoteDownClick}
+        />
       </div>
     );
   }

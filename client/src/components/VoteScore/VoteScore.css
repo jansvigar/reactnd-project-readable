@@ -1,0 +1,25 @@
+.vote-score-wrapper {
+  display: flex;
+  flex-direction: column;
+  font-size: 2em;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vote-control-up, .vote-control-down {
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.vote-score {
+  padding: 5px 10px;
+  background: #01BC32;
+  color: white;
+  font-weight: 600;
+  border-radius: 5px;
+  border: 4px solid #666666;
+  min-width: 60px;
+  text-align: center;
+}

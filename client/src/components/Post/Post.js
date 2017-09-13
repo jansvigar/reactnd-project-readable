@@ -7,7 +7,7 @@ import {
   FaTimesCircle } from 'react-icons/lib/fa';
 import { convertUnixTimestampToDate } from '../../utils/helpers';
 import { disablePost as apiDisablePost } from '../../redux/modules/posts';
-import PostVoteScore from '../PostVoteScore/PostVoteScore';
+import PostVoteScore from '../../containers/PostVoteScore';
 
 const Post = ({
   id,
