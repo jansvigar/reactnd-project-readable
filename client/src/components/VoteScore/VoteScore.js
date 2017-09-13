@@ -6,26 +6,24 @@ import './VoteScore.css';
 const VoteScore = (props) => {
   const { score, onVoteUp, onVoteDown } = props;
   return (
-    <div>
-      <div className="vote-score-wrapper">
-        <span
-          role="button"
-          className="vote-control-up"
-          tabIndex="0"
-          onClick={onVoteUp}
-        >
-          <FaCaretSquareOUp />
-        </span>
-        <div className="vote-score"><span>{score}</span></div>
-        <span
-          role="button"
-          tabIndex="0"
-          className="vote-control-down"
-          onClick={onVoteDown}
-        >
-          <FaCaretSquareODown />
-        </span>
-      </div>
+    <div className="vote-score-wrapper">
+      <span
+        role="button"
+        className="vote-control-up"
+        tabIndex="0"
+        onClick={onVoteUp}
+      >
+        <FaCaretSquareOUp />
+      </span>
+      <div className="vote-score"><span>{score}</span></div>
+      <span
+        role="button"
+        tabIndex="0"
+        className="vote-control-down"
+        onClick={onVoteDown}
+      >
+        <FaCaretSquareODown />
+      </span>
     </div>
   );
 };

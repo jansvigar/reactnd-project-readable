@@ -5,7 +5,8 @@ import Modal from '../components/Modal/Modal';
 import Post from '../components/Post/Post';
 import PostsListContainer from './PostsListContainer';
 import { openModal, closeModal } from '../redux/modules/modal';
-import { getPost } from '../redux/modules/posts';
+import { getPost, getCommentsByPost } from '../redux/modules/posts';
+import Comment from '../components/Comment/Comment';
 
 class PostDetailModal extends Component {
   componentDidMount() {
@@ -14,6 +15,9 @@ class PostDetailModal extends Component {
   handleCloseModal = () => {
     this.props.closeModal();
     this.props.history.push('/');
+  }
+  handleCommentDelete = () => {
+    console.log('comment deleted');
   }
   render() {
     return (
@@ -24,7 +28,18 @@ class PostDetailModal extends Component {
           closeModal={this.handleCloseModal}
           isOpen={this.props.isOpen}
         >
-          <Post {...this.props.post} showBody />
+          <div>
+            {this.props.post && <Post {...this.props.post} showBody />}
+            <h3>Comments</h3>
+            {this.props.comments.length
+              ? this.props.comments.map(comment => (
+                <div key={comment.id}>
+                  <Comment comment={comment} onDelete={this.handleCommentDelete} />
+                </div>
+              ))
+              : <div>{'There is no comment for this post yet'}</div>
+            }
+          </div>
         </Modal>
       </div>
     );
@@ -37,13 +52,15 @@ PostDetailModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  post: PropTypes.object.isRequired,
+  post: PropTypes.object,
+  comments: PropTypes.array,
 };
 
 function mapStateToProps(state, ownProps) {
   return {
     isOpen: state.modal.isOpen,
     post: getPost(state.posts, ownProps.match.params.id),
+    comments: getCommentsByPost(state, ownProps.match.params.id),
   };
 }
 

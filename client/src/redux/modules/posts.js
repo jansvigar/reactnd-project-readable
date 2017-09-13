@@ -8,7 +8,7 @@ import {
   updatePost as apiUpdatePost,
   deletePostById as apiDeletePost,
 } from '../../utils/api';
-import { FETCHING_COMMENTS_SUCCESS, fetchAndHandleComments } from './comments';
+import { FETCHING_COMMENTS_SUCCESS, fetchAndHandleComments, getCommentById } from './comments';
 
 export const FETCHING_POSTS = 'FETCHING_POSTS';
 export const FETCHING_POSTS_SUCCESS = 'FETCHING_POSTS_SUCCESS';
@@ -82,7 +82,10 @@ export const fetchAndHandlePosts = category => (dispatch) => {
         dispatch(fetchAndHandleComments(post.id));
       });
     })
-    .catch(error => dispatch(fetchingPostsError(error, category)));
+    .catch((error) => {
+      console.log(error);
+      dispatch(fetchingPostsError(error, category));
+    });
 };
 
 export const saveNewPost = post => (dispatch) => {
@@ -204,3 +207,8 @@ export const getPostsByCategory = (state, category) => {
 export const getPostVoteScore = (state, id) => (state[id]
   ? state[id].voteScore
   : 0);
+export const getCommentsByPost = (state, id) => (
+  state.posts.byId[id] && state.posts.byId[id].comments
+    ? state.posts.byId[id].comments.map(commentId => getCommentById(state.comments, commentId))
+    : []
+);

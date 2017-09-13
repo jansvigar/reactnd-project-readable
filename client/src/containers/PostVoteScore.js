@@ -6,19 +6,16 @@ import VoteScore from '../components/VoteScore/VoteScore';
 
 class PostVoteScore extends Component {
   handleVoteUpClick = event => this.props.votePostById(this.props.postId, 'upVote', event)
-
   handleVoteDownClick = event => this.props.votePostById(this.props.postId, 'downVote', event)
 
   render() {
     const { voteScore } = this.props;
     return (
-      <div>
-        <VoteScore
-          score={voteScore}
-          onVoteUp={this.handleVoteUpClick}
-          onVoteDown={this.handleVoteDownClick}
-        />
-      </div>
+      <VoteScore
+        score={voteScore}
+        onVoteUp={this.handleVoteUpClick}
+        onVoteDown={this.handleVoteDownClick}
+      />
     );
   }
 }

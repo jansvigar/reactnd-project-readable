@@ -101,25 +101,14 @@ export const addNewComment = newComment =>
   }).then(res => res.json())
     .then(data => data);
 
-export const upVoteComment = commentId =>
+export const voteComment = (commentId, option) =>
   fetch(`/comments/${commentId}`, {
     method: 'POST',
     headers: {
       ...headers,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ option: 'upVote' }),
-  }).then(res => res.json())
-    .then(data => data);
-
-export const downVoteComment = commentId =>
-  fetch(`/comments/${commentId}`, {
-    method: 'POST',
-    headers: {
-      ...headers,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ option: 'downVote' }),
+    body: JSON.stringify({ option }),
   }).then(res => res.json())
     .then(data => data);
 

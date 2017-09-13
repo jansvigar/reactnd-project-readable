@@ -44,7 +44,7 @@ const Modal = props => (
 );
 
 Modal.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.element,
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
   contentLabel: PropTypes.string.isRequired,

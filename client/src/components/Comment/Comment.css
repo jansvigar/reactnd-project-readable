@@ -1,0 +1,52 @@
+.comment {
+  display: flex;
+  padding: 10px;
+  align-items: flex-start;
+}
+
+.comment .comment-content {
+  margin-left: 15px;
+  flex: 1;
+}
+
+.comment .vote-score-wrapper {
+  font-size: 1.2em;
+}
+
+.comment .vote-score {
+  font-size: 1.2em;
+  min-width: 45px;
+}
+
+.comment .vote-control-up, .comment .vote-control-down {
+  font-size: 25px;
+}
+
+.comment .comment-content>*{
+  display: flex;
+
+}
+
+.comment .comment-header {
+
+}
+
+.comment .comment-body {
+  border: 1px solid rgb(120, 120, 120);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.comment .comment-footer>* {
+  margin-left: 10px;
+}
+
+.comment .comment-footer a {
+  margin-left: 4px;
+  text-decoration: underline;
+}
+
+.comment .comment-footer a:hover {
+  text-decoration: none;
+}
