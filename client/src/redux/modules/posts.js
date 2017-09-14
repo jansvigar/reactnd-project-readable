@@ -8,7 +8,12 @@ import {
   updatePost as apiUpdatePost,
   deletePostById as apiDeletePost,
 } from '../../utils/api';
-import { FETCHING_COMMENTS_SUCCESS, fetchAndHandleComments, getCommentById } from './comments';
+import {
+  FETCHING_COMMENTS_SUCCESS,
+  TOGGLE_COMMENT_ADD_FORM,
+  ADD_NEW_COMMENT,
+  fetchAndHandleComments,
+  getCommentById } from './comments';
 
 export const FETCHING_POSTS = 'FETCHING_POSTS';
 export const FETCHING_POSTS_SUCCESS = 'FETCHING_POSTS_SUCCESS';
@@ -158,6 +163,25 @@ function byId(state = {}, action) {
           ],
         },
       };
+    case ADD_NEW_COMMENT:
+      return {
+        ...state,
+        [action.comment.parentId]: {
+          ...state[action.comment.parentId],
+          comments: [
+            ...state[action.comment.parentId].comments,
+            action.comment.id,
+          ],
+        },
+      };
+    case TOGGLE_COMMENT_ADD_FORM:
+      return {
+        ...state,
+        [action.postId]: {
+          ...state[action.postId],
+          isCommentAddFormOpen: !state[action.postId].isCommentAddFormOpen,
+        },
+      };
     default:
       return state;
   }
@@ -211,4 +235,9 @@ export const getCommentsByPost = (state, id) => (
   state.posts.byId[id] && state.posts.byId[id].comments
     ? state.posts.byId[id].comments.map(commentId => getCommentById(state.comments, commentId))
     : []
+);
+export const getIsCommentAddFormOpen = (state, id) => (
+  state.posts.byId[id]
+    ? state.posts.byId[id].isCommentAddFormOpen
+    : false
 );

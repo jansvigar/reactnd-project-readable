@@ -250,6 +250,17 @@ select:disabled::-ms-expand {
   margin-left: 10px;
 }
 
+.comments-list {
+  margin-left: 15px;
+}
+
+.comments-list-header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+
 /* Navigation */
 
 nav {

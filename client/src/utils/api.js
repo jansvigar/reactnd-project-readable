@@ -79,8 +79,8 @@ export const getCommentById = commentId =>
     .then(res => res.json())
     .then(data => data);
 
-export const updateComment = (commentId, comment) =>
-  fetch(`/comments/${commentId}`, {
+export const updateComment = comment =>
+  fetch(`/comments/${comment.id}`, {
     method: 'PUT',
     headers: {
       ...headers,
@@ -97,7 +97,7 @@ export const addNewComment = newComment =>
       ...headers,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ newComment }),
+    body: JSON.stringify({ ...newComment }),
   }).then(res => res.json())
     .then(data => data);
 

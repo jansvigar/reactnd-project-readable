@@ -1,12 +1,18 @@
 import {
   getCommentsByPost as apiGetCommentsByPost,
   voteComment as apiVoteComment,
+  addNewComment as apiAddNewComment,
+  updateComment as apiUpdateComment,
 } from '../../utils/api';
 
 const FETCHING_COMMENTS = 'FETCHING_COMMENTS';
 export const FETCHING_COMMENTS_SUCCESS = 'FETCHING_COMMENTS_SUCCESS';
 const FETCHING_COMMENTS_ERROR = 'FETCHING_COMMENTS_ERROR';
 const VOTE_COMMENT = 'VOTE_COMMENT';
+export const ADD_NEW_COMMENT = 'ADD_NEW_COMMENT';
+const EDIT_COMMENT = 'EDIT_COMMENT';
+export const TOGGLE_COMMENT_ADD_FORM = 'TOGGLE_COMMENT_ADD_FORM';
+export const TOGGLE_COMMENT_EDIT_FORM = 'TOGGLE_COMMENT_EDIT_FORM';
 
 const fetchingComments = () => ({
   type: FETCHING_COMMENTS,
@@ -23,10 +29,30 @@ const fetchingCommentsError = error => ({
   error,
 });
 
+const addNewComment = comment => ({
+  type: ADD_NEW_COMMENT,
+  comment,
+});
+
+const editComment = comment => ({
+  type: EDIT_COMMENT,
+  comment,
+});
+
 const voteComment = (commentId, option) => ({
   type: VOTE_COMMENT,
   commentId,
   option,
+});
+
+export const toggleCommentAddForm = postId => ({
+  type: TOGGLE_COMMENT_ADD_FORM,
+  postId,
+});
+
+export const toggleCommentEditForm = commentId => ({
+  type: TOGGLE_COMMENT_EDIT_FORM,
+  commentId,
 });
 
 export const voteCommentById = (commentId, option) => (dispatch) => {
@@ -53,6 +79,23 @@ export const fetchAndHandleComments = postId => (dispatch) => {
 };
 /* eslint-disable no-param-reassign */
 
+export const saveNewComment = comment => (dispatch) => {
+  apiAddNewComment(comment)
+    .then((data) => {
+      dispatch(addNewComment(data));
+    })
+    .catch(error => console.warn(error));
+};
+
+export const updateComment = comment => (dispatch) => {
+  /* eslint-disable no-debugger */
+  apiUpdateComment(comment)
+    .then((data) => {
+      dispatch(editComment(data));
+    })
+    .catch(error => console.warn(error));
+};
+
 export default function byId(state = {}, action) {
   switch (action.type) {
     case FETCHING_COMMENTS_SUCCESS:
@@ -68,6 +111,14 @@ export default function byId(state = {}, action) {
           voteScore: action.option === 'upVote'
             ? state[action.commentId].voteScore + 1
             : state[action.commentId].voteScore - 1,
+        },
+      };
+    case ADD_NEW_COMMENT:
+      return {
+        ...state,
+        [action.comment.id]: {
+          ...state[action.comment.id],
+          ...action.comment,
         },
       };
     default:
