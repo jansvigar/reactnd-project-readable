@@ -11,7 +11,7 @@ const PostsList = ({ posts, category, handleSort }) => (
   <div>
     <div className="subheader">
       <h2><Link to="/">All Categories</Link>{`${category !== 'all' ? ` > ${capitalize(category)}` : ''}` }</h2>
-      <SortList posts={posts} category={category} handleSort={handleSort} />
+      <SortList items={posts} parentId={category} handleSort={handleSort} />
     </div>
     <div className="list-posts">
       {posts && posts.map(post => (

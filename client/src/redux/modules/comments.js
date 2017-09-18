@@ -1,4 +1,5 @@
 import { DELETE_POST } from './posts';
+import { sort } from '../../utils/helpers';
 import {
   getCommentsByPost as apiGetCommentsByPost,
   voteComment as apiVoteComment,
@@ -16,6 +17,7 @@ export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const TOGGLE_COMMENT_ADD_FORM = 'TOGGLE_COMMENT_ADD_FORM';
 export const TOGGLE_COMMENT_EDIT_FORM = 'TOGGLE_COMMENT_EDIT_FORM';
+export const SORT_COMMENTS = 'SORT_COMMENTS';
 
 const fetchingComments = () => ({
   type: FETCHING_COMMENTS,
@@ -62,6 +64,12 @@ export const toggleCommentAddForm = postId => ({
 export const toggleCommentEditForm = commentId => ({
   type: TOGGLE_COMMENT_EDIT_FORM,
   commentId,
+});
+
+export const sortComments = (sortedComments, parentId) => ({
+  type: SORT_COMMENTS,
+  sortedComments,
+  parentId,
 });
 
 export const voteCommentById = (commentId, option) => (dispatch) => {
@@ -111,6 +119,26 @@ export const disableComment = (commentId, postId) => (dispatch) => {
       dispatch(deleteComment(commentId, postId));
     })
     .catch(error => console.warn(error));
+};
+
+export const handleSort = (comments, parentId, sortBy) => (dispatch) => {
+  const sortCommentsBy = sort(comments);
+  switch (sortBy) {
+    case 'score_asc':
+      dispatch(sortComments(sortCommentsBy('voteScore'), parentId));
+      break;
+    case 'score_desc':
+      dispatch(sortComments(sortCommentsBy('voteScore').reverse(), parentId));
+      break;
+    case 'timestamp_asc':
+      dispatch(sortComments(sortCommentsBy('timestamp'), parentId));
+      break;
+    case 'timestamp_desc':
+      dispatch(sortComments(sortCommentsBy('timestamp').reverse(), parentId));
+      break;
+    default:
+      break;
+  }
 };
 
 export default function byId(state = {}, action) {

@@ -14,6 +14,7 @@ import {
   TOGGLE_COMMENT_ADD_FORM,
   ADD_NEW_COMMENT,
   DELETE_COMMENT,
+  SORT_COMMENTS,
   fetchAndHandleComments,
   getCommentById } from './comments';
 
@@ -129,20 +130,20 @@ export const updatePost = post => (dispatch) => {
     .catch(error => console.warn(error));
 };
 
-export const handleSort = (posts, category, sortBy) => (dispatch) => {
+export const handleSort = (posts, parentId, sortBy) => (dispatch) => {
   const sortPostsBy = sort(posts);
   switch (sortBy) {
     case 'score_asc':
-      dispatch(sortPosts(sortPostsBy('voteScore'), category));
+      dispatch(sortPosts(sortPostsBy('voteScore'), parentId));
       break;
     case 'score_desc':
-      dispatch(sortPosts(sortPostsBy('voteScore').reverse(), category));
+      dispatch(sortPosts(sortPostsBy('voteScore').reverse(), parentId));
       break;
     case 'timestamp_asc':
-      dispatch(sortPosts(sortPostsBy('timestamp'), category));
+      dispatch(sortPosts(sortPostsBy('timestamp'), parentId));
       break;
     case 'timestamp_desc':
-      dispatch(sortPosts(sortPostsBy('timestamp').reverse(), category));
+      dispatch(sortPosts(sortPostsBy('timestamp').reverse(), parentId));
       break;
     default:
       break;
@@ -222,6 +223,14 @@ function byId(state = {}, action) {
         [action.postId]: {
           ...state[action.postId],
           isCommentAddFormOpen: !state[action.postId].isCommentAddFormOpen,
+        },
+      };
+    case SORT_COMMENTS:
+      return {
+        ...state,
+        [action.parentId]: {
+          ...state[action.parentId],
+          comments: [...action.sortedComments.map(comment => comment.id)],
         },
       };
     default:

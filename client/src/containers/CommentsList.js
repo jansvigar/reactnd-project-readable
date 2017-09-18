@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Comment from '../components/Comment/Comment';
 import CommentForm from '../components/CommentForm/CommentForm';
+import SortList from '../components/SortList/SortList';
 import { getCommentsByPost, getIsCommentAddFormOpen } from '../redux/modules/posts';
 import {
   saveNewComment,
   updateComment,
   toggleCommentAddForm,
+  handleSort,
 } from '../redux/modules/comments';
 
 class CommentsList extends Component {
@@ -29,6 +31,11 @@ class CommentsList extends Component {
             onUpdateComment={this.props.updateComment}
             onToggleCommentAdd={this.toggleCommentAddForm}
           />}
+        <SortList
+          items={this.props.comments}
+          handleSort={this.props.handleSort}
+          parentId={this.props.postId}
+        />
         <div className="comments-list">
           {
             this.props.comments.length
@@ -53,6 +60,7 @@ CommentsList.propTypes = {
   isCommentAddFormOpen: PropTypes.bool,
   toggleCommentAddForm: PropTypes.func.isRequired,
   postId: PropTypes.string.isRequired,
+  handleSort: PropTypes.func,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -64,5 +72,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
   mapStateToProps,
-  { saveNewComment, updateComment, toggleCommentAddForm },
+  { saveNewComment, updateComment, toggleCommentAddForm, handleSort },
 )(CommentsList);

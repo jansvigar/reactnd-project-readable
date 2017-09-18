@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const SortList = (props) => {
   const onSort = (event) => {
-    props.handleSort(props.posts, props.category, event.target.value);
+    props.handleSort(props.items, props.parentId, event.target.value);
   };
   return (
     <select className="sort-list" onChange={onSort}>
@@ -17,8 +17,8 @@ const SortList = (props) => {
 
 SortList.propTypes = {
   handleSort: PropTypes.func.isRequired,
-  posts: PropTypes.array.isRequired,
-  category: PropTypes.string.isRequired,
+  items: PropTypes.array.isRequired,
+  parentId: PropTypes.string,
 };
 
 export default SortList;
