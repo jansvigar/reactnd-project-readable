@@ -59,6 +59,7 @@ hr {
 
 .comment-form>div {
   display: flex;
+  flex:1;
   justify-content: center;
   margin: 10px 5px;
   font-size:1em;

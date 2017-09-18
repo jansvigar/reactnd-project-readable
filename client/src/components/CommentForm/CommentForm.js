@@ -55,11 +55,16 @@ class CommentForm extends Component {
   }
 
   onSubmitEditComment = (values) => {
-    this.props.onUpdateComment(values);
-    this.props.onToggleCommentEdit();
+    const updatedCommentData = {
+      ...values,
+      isCommentEditFormOpen: false,
+    };
+    this.props.onUpdateComment(updatedCommentData);
   }
   render() {
-    const { handleSubmit, pristine, submitting, onToggleCommentAdd, commentId } = this.props;
+    const { handleSubmit, pristine,
+      submitting, onToggleCommentAdd,
+      onToggleCommentEdit, commentId } = this.props;
     return (
       <div className="comment-form-wrapper">
         <form className="comment-form" onSubmit={handleSubmit(commentId ? this.onSubmitEditComment : this.onSubmitNewComment)}>
@@ -84,7 +89,7 @@ class CommentForm extends Component {
             <button type="submit" disabled={pristine || submitting}>
             Submit
             </button>
-            <button type="button" disabled={submitting} onClick={onToggleCommentAdd}>
+            <button type="button" disabled={submitting} onClick={commentId ? onToggleCommentEdit : onToggleCommentAdd}>
             Cancel
             </button>
           </div>

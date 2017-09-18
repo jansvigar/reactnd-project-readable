@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import Comment from '../components/Comment/Comment';
 import CommentForm from '../components/CommentForm/CommentForm';
 import { getCommentsByPost, getIsCommentAddFormOpen } from '../redux/modules/posts';
-import { saveNewComment, updateComment, toggleCommentAddForm } from '../redux/modules/comments';
+import {
+  saveNewComment,
+  updateComment,
+  toggleCommentAddForm,
+} from '../redux/modules/comments';
 
 class CommentsList extends Component {
-  handleCommentDelete = () => {
-    console.log('comment deleted');
-  }
   toggleCommentAddForm = () => {
     const postId = this.props.postId;
     this.props.toggleCommentAddForm(postId);
@@ -31,11 +32,10 @@ class CommentsList extends Component {
         <div className="comments-list">
           {
             this.props.comments.length
-              ? this.props.comments.map(comment => (
+              ? this.props.comments.map(comment => comment && (
                 <Comment
                   key={comment.id}
                   comment={comment}
-                  onDelete={this.handleCommentDelete}
                 />
               ))
               : <div>{'There is no comment for this post yet'}</div>

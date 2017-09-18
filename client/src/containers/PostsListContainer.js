@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import PostsList from '../components/PostsList/PostsList';
-import { fetchAndHandlePosts, getPostsByCategory, getIsFetching, getErrorMessage } from '../redux/modules/posts';
+import { fetchAndHandlePosts,
+  getPostsByCategory,
+  getIsFetching,
+  getErrorMessage,
+  handleSort as onSort,
+} from '../redux/modules/posts';
 
 class PostsListContainer extends Component {
   static propTypes = {
@@ -12,6 +17,7 @@ class PostsListContainer extends Component {
     isFetching: PropTypes.bool.isRequired,
     error: PropTypes.string,
     category: PropTypes.string.isRequired,
+    handleSort: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -25,13 +31,13 @@ class PostsListContainer extends Component {
   }
 
   render() {
-    const { posts, category, isFetching, error } = this.props;
+    const { posts, category, handleSort, isFetching, error } = this.props;
     return (
       <div>
         {error && <ErrorMessage error={error} />}
         {isFetching && !error
           ? <div>Loading...</div>
-          : <PostsList posts={posts} category={category} />
+          : <PostsList posts={posts} category={category} handleSort={handleSort} />
         }
       </div>
     );
@@ -50,5 +56,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
   mapStateToProps,
-  { fetchAndHandlePosts },
+  { fetchAndHandlePosts, handleSort: onSort },
 )(PostsListContainer);

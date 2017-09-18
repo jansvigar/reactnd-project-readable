@@ -3,8 +3,9 @@ import { FETCHING_POSTS,
   FETCHING_POSTS_SUCCESS,
   FETCHING_POSTS_ERROR,
   ADD_NEW_POST,
-  DELETE_POST } from './posts';
-
+  DELETE_POST,
+  SORT_POSTS } from './posts';
+/* eslint-disable no-case-declarations */
 function categoryPosts(category) {
   const ids = (state = [], action) => {
     switch (action.type) {
@@ -18,10 +19,14 @@ function categoryPosts(category) {
           : state;
       case DELETE_POST:
         return state.filter(id => id !== action.postId);
+      case SORT_POSTS:
+        const newPosts = action.sortedPosts.map(post => post.id);
+        return newPosts;
       default:
         return state;
     }
   };
+  /* eslint-enable no-case-declarations */
 
   const isFetching = (state = false, action) => {
     if (action.category !== category) {

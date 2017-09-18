@@ -23,8 +23,6 @@
 }
 
 .comment .comment-content>*{
-  display: flex;
-
 }
 
 .comment .comment-header {
@@ -45,6 +43,7 @@
 .comment .comment-footer a {
   margin-left: 4px;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .comment .comment-footer a:hover {

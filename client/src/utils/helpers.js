@@ -6,3 +6,37 @@ export const capitalize = str =>
 
 export const convertUnixTimestampToDate = timestamp =>
   moment(timestamp).format('MMMM Do, YYYY');
+
+/* eslint-disable no-param-reassign, no-nested-ternary */
+const compare = (a, b) => {
+  const isNumber = typeof (a) === 'number' && typeof (b) === 'number';
+  const isString = typeof (a) === 'string' && typeof (b) === 'string';
+
+  if (isNumber) {
+    return a - b;
+  }
+
+  if (isString) {
+    a = a.toUpperCase();
+    b = b.toUpperCase();
+    return a < b
+      ? -1
+      : a > b
+        ? 1 : 0;
+  }
+
+  return 0;
+};
+
+export const sort = (items = []) => (sortBy) => {
+  const sortedItems = [].concat(items);
+  sortedItems.sort((a, b) => {
+    a = a[sortBy] || 0;
+    b = b[sortBy] || 0;
+    return compare(a, b);
+  });
+
+  return sortedItems;
+};
+
+/* eslint-enable no-param-reassign, no-nested-ternary */

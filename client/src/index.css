@@ -119,8 +119,8 @@ button, span {
     justify-content: flex-start;
   }
 
-  .sort-posts {
-    margin-top: 10px;
+  .subheader h2 {
+    margin-bottom: 10px;
   }
 }
 

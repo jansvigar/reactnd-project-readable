@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import categoryPosts from './categoryPosts';
+import { sort } from '../../utils/helpers';
 import {
   getAllPosts as apiGetAllPosts,
   getPostsByCategory as apiGetPostsByCategory,
@@ -12,6 +13,7 @@ import {
   FETCHING_COMMENTS_SUCCESS,
   TOGGLE_COMMENT_ADD_FORM,
   ADD_NEW_COMMENT,
+  DELETE_COMMENT,
   fetchAndHandleComments,
   getCommentById } from './comments';
 
@@ -22,6 +24,7 @@ export const ADD_NEW_POST = 'ADD_NEW_POST';
 export const EDIT_POST = 'EDIT_POST';
 export const DELETE_POST = 'DELETE_POST';
 export const VOTE_POST = 'VOTE_POST';
+export const SORT_POSTS = 'SORT_POSTS';
 
 const fetchingPosts = category => ({
   type: FETCHING_POSTS,
@@ -50,10 +53,11 @@ const editPost = post => ({
   post,
 });
 
-const deletePost = (postId, category) => ({
+const deletePost = (postId, category, comments) => ({
   type: DELETE_POST,
   postId,
   category,
+  comments,
 });
 
 const votePost = (postId, option) => ({
@@ -61,6 +65,13 @@ const votePost = (postId, option) => ({
   postId,
   option,
 });
+
+const sortPosts = (sortedPosts, category) => ({
+  type: SORT_POSTS,
+  sortedPosts,
+  category,
+});
+
 
 export const votePostById = (postId, option, e) => {
   e.stopPropagation();
@@ -88,7 +99,7 @@ export const fetchAndHandlePosts = category => (dispatch) => {
       });
     })
     .catch((error) => {
-      console.log(error);
+      console.warn(error);
       dispatch(fetchingPostsError(error, category));
     });
 };
@@ -101,10 +112,10 @@ export const saveNewPost = post => (dispatch) => {
     .catch(error => console.warn(error));
 };
 
-export const disablePost = (postId, category) => (dispatch) => {
+export const disablePost = (postId, category, comments) => (dispatch) => {
   apiDeletePost(postId)
     .then(() => {
-      dispatch(deletePost(postId, category));
+      dispatch(deletePost(postId, category, comments));
     })
     .catch(error => console.warn(error));
 };
@@ -116,6 +127,26 @@ export const updatePost = post => (dispatch) => {
       dispatch(editPost(data));
     })
     .catch(error => console.warn(error));
+};
+
+export const handleSort = (posts, category, sortBy) => (dispatch) => {
+  const sortPostsBy = sort(posts);
+  switch (sortBy) {
+    case 'score_asc':
+      dispatch(sortPosts(sortPostsBy('voteScore'), category));
+      break;
+    case 'score_desc':
+      dispatch(sortPosts(sortPostsBy('voteScore').reverse(), category));
+      break;
+    case 'timestamp_asc':
+      dispatch(sortPosts(sortPostsBy('timestamp'), category));
+      break;
+    case 'timestamp_desc':
+      dispatch(sortPosts(sortPostsBy('timestamp').reverse(), category));
+      break;
+    default:
+      break;
+  }
 };
 
 /* eslint no-param-reassign:
@@ -174,6 +205,17 @@ function byId(state = {}, action) {
           ],
         },
       };
+    case DELETE_COMMENT: {
+      return {
+        ...state,
+        [action.postId]: {
+          ...state[action.postId],
+          comments: [
+            ...state[action.postId].comments.filter(comment => comment !== action.commentId),
+          ],
+        },
+      };
+    }
     case TOGGLE_COMMENT_ADD_FORM:
       return {
         ...state,
@@ -190,6 +232,7 @@ function byId(state = {}, action) {
 function byCategories(state = {}, action) {
   switch (action.type) {
     case FETCHING_POSTS_SUCCESS:
+    case SORT_POSTS:
       return {
         ...state,
         [action.category]: categoryPosts(action.category)(state[action.category], action),
@@ -233,7 +276,8 @@ export const getPostVoteScore = (state, id) => (state[id]
   : 0);
 export const getCommentsByPost = (state, id) => (
   state.posts.byId[id] && state.posts.byId[id].comments
-    ? state.posts.byId[id].comments.map(commentId => getCommentById(state.comments, commentId))
+    ? state.posts.byId[id].comments.map(commentId => (
+      getCommentById(state.comments, commentId)))
     : []
 );
 export const getIsCommentAddFormOpen = (state, id) => (

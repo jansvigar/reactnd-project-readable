@@ -22,7 +22,7 @@ const Post = ({
 }) => {
   const onDelete = (event) => {
     event.preventDefault();
-    disablePost(id, category);
+    disablePost(id, category, comments);
   };
   return (
     <div className="post">
