@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import CategoriesList from '../components/CategoriesList/CategoriesList';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import * as fromCategories from '../redux/modules/categories';
-
+import Spinner from '../components/Spinner/Spinner';
 
 class CategoriesListContainer extends Component {
   static propTypes = {
@@ -24,7 +24,7 @@ class CategoriesListContainer extends Component {
       <div>
         {errorMessage && <ErrorMessage error={errorMessage} />}
         {isFetching && !errorMessage
-          ? <div>Loading...</div>
+          ? <Spinner />
           : <CategoriesList categories={categories} />
         }
       </div>
