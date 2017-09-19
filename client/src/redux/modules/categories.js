@@ -97,13 +97,3 @@ export default combineReducers({
   isFetching,
   errorMessage,
 });
-
-export const getCategoriesNames = state => state.names;
-export const getCategoryByName = (state, name) => state.byName[name];
-export const getCategories = state => (
-  state
-    ? getCategoriesNames(state).map(categoryName => getCategoryByName(state, categoryName))
-    : state
-);
-export const getIsFetching = state => state.isFetching;
-export const getErrorMessage = state => state.errorMessage;
