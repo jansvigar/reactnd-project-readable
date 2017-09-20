@@ -1,0 +1,15 @@
+.errorMessage {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 5px;
+  margin: 10px 0;
+}
+
+.errorMessage p {
+  color: red;
+}
+
+.errorMessage button {
+  margin: 5px 0;
+  width: 80px;
+}

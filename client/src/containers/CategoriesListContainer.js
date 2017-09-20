@@ -12,7 +12,7 @@ class CategoriesListContainer extends Component {
     categories: PropTypes.arrayOf(PropTypes.object).isRequired,
     fetchAndHandleCategories: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
-    errorMessage: PropTypes.string.isRequired,
+    errorMessage: PropTypes.string,
   }
 
   componentDidMount() {
@@ -20,14 +20,14 @@ class CategoriesListContainer extends Component {
   }
 
   render() {
-    const { categories, isFetching, errorMessage } = this.props;
+    const { categories, isFetching, errorMessage, fetchAndHandleCategories } = this.props;
     return (
       <div>
-        {errorMessage && <ErrorMessage error={errorMessage} />}
         {isFetching && !errorMessage
           ? <Spinner />
           : <CategoriesList categories={categories} />
         }
+        {errorMessage && <ErrorMessage error={errorMessage} onRetry={fetchAndHandleCategories} />}
       </div>
     );
   }

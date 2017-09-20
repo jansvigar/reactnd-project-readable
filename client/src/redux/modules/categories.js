@@ -1,16 +1,12 @@
 import { combineReducers } from 'redux';
-import { getAllCategories } from '../../utils/api';
+import { getAllCategories as getAllCategoriesAPI } from '../../utils/api';
 
-/*
-  Categories Action Types
-*/
+/* Categories Action Types */
 export const FETCHING_CATEGORIES = 'FETCHING_CATEGORIES';
 export const FETCHING_CATEGORIES_ERROR = 'FETCHING_CATEGORIES_ERROR';
 export const FETCHING_CATEGORIES_SUCCESS = 'FETCHING_CATEGORIES_SUCCESS';
 
-/*
-  Categories Action Creators
-*/
+/* Categories Action Creators */
 const fetchingCategories = () => ({
   type: FETCHING_CATEGORIES,
 });
@@ -25,25 +21,19 @@ const fetchingCategoriesSuccess = data => ({
   categories: data,
 });
 
-/*
- Categories Action Thunk
-*/
+/* Categories Action Thunk */
 export const fetchAndHandleCategories = () => (dispatch) => {
   dispatch(fetchingCategories());
-  getAllCategories()
-    .then(data => dispatch(fetchingCategoriesSuccess(data)))
-    .catch(error => dispatch(fetchingCategoriesError(error)));
+  getAllCategoriesAPI()
+    .then(
+      data => dispatch(fetchingCategoriesSuccess(data)),
+      error => dispatch(fetchingCategoriesError(error)),
+    );
 };
 
-/*
- Categories Reducer
-*/
+/* Categories Reducers */
 
-/* eslint no-param-reassign:
-  ["error",
-    { "props": true,
-      "ignorePropertyModificationsFor": ["nextState"] }
-  ] */
+/* eslint-disable no-param-reassign */
 function byName(state = {}, action) {
   switch (action.type) {
     case FETCHING_CATEGORIES_SUCCESS:
@@ -55,6 +45,7 @@ function byName(state = {}, action) {
       return state;
   }
 }
+/* eslint-enable no-param-reassign */
 
 function names(state = [], action) {
   switch (action.type) {
@@ -80,10 +71,10 @@ function isFetching(state = false, action) {
   }
 }
 
-function errorMessage(state = '', action) {
+function errorMessage(state = null, action) {
   switch (action.type) {
     case FETCHING_CATEGORIES_SUCCESS:
-      return '';
+      return null;
     case FETCHING_CATEGORIES_ERROR:
       return action.error;
     default:
