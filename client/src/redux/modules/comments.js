@@ -1,4 +1,6 @@
+import { normalize } from 'normalizr';
 import { DELETE_POST } from './posts';
+import { commentListSchema, commentSchema } from '../schema';
 import { sort } from '../../utils/helpers';
 import {
   getCommentsByPost as apiGetCommentsByPost,
@@ -23,9 +25,9 @@ const fetchingComments = () => ({
   type: FETCHING_COMMENTS,
 });
 
-const fetchingCommentsSuccess = (comments, postId) => ({
+const fetchingCommentsSuccess = (response, postId) => ({
   type: FETCHING_COMMENTS_SUCCESS,
-  comments,
+  response,
   postId,
 });
 
@@ -34,14 +36,16 @@ const fetchingCommentsError = error => ({
   error,
 });
 
-const addNewComment = comment => ({
+const addNewComment = (response, postId) => ({
   type: ADD_NEW_COMMENT,
-  comment,
+  response,
+  postId,
 });
 
-const editComment = comment => ({
+const editComment = (response, postId) => ({
   type: EDIT_COMMENT,
-  comment,
+  response,
+  postId,
 });
 
 const deleteComment = (commentId, postId) => ({
@@ -72,6 +76,46 @@ export const sortComments = (sortedComments, parentId) => ({
   parentId,
 });
 
+export const fetchAndHandleComments = postId => (dispatch) => {
+  dispatch(fetchingComments());
+  apiGetCommentsByPost(postId)
+    .then((response) => {
+      const normalizedResponse = normalize(response, commentListSchema);
+      dispatch(fetchingCommentsSuccess(normalizedResponse, postId));
+    },
+    error => dispatch(fetchingCommentsError(error)));
+};
+
+export const saveNewComment = (comment, parentId) => (dispatch) => {
+  apiAddNewComment(comment)
+    .then(
+      (response) => {
+        const normalizedResponse = normalize(response, commentSchema);
+        dispatch(addNewComment(normalizedResponse, parentId));
+      },
+      error => error,
+    );
+};
+
+export const updateComment = (comment, parentId) => (dispatch) => {
+  apiUpdateComment(comment)
+    .then(
+      (response) => {
+        const normalizedResponse = normalize(response, commentSchema);
+        dispatch(editComment(normalizedResponse, parentId));
+      },
+      error => error,
+    );
+};
+
+export const disableComment = (commentId, postId) => (dispatch) => {
+  apiDeleteComment(commentId)
+    .then(
+      () => dispatch(deleteComment(commentId, postId)),
+      error => error,
+    );
+};
+
 export const voteCommentById = (commentId, option) => (dispatch) => {
   const voteUpComment = voteComment(commentId, 'upVote');
   const voteDownComment = voteComment(commentId, 'downVote');
@@ -84,70 +128,53 @@ export const voteCommentById = (commentId, option) => (dispatch) => {
     });
 };
 
-export const fetchAndHandleComments = postId => (dispatch) => {
-  dispatch(fetchingComments());
-  apiGetCommentsByPost(postId)
-    .then((data) => {
-      dispatch(fetchingCommentsSuccess(data, postId));
-    })
-    .catch((error) => {
-      dispatch(fetchingCommentsError(error));
-    });
-};
-/* eslint-disable no-param-reassign */
-
-export const saveNewComment = comment => (dispatch) => {
-  apiAddNewComment(comment)
-    .then((data) => {
-      dispatch(addNewComment(data));
-    })
-    .catch(error => console.warn(error));
-};
-
-export const updateComment = comment => (dispatch) => {
-  /* eslint-disable no-debugger */
-  apiUpdateComment(comment)
-    .then((data) => {
-      dispatch(editComment(data));
-    })
-    .catch(error => console.warn(error));
-};
-
-export const disableComment = (commentId, postId) => (dispatch) => {
-  apiDeleteComment(commentId)
-    .then(() => {
-      dispatch(deleteComment(commentId, postId));
-    })
-    .catch(error => console.warn(error));
-};
-
-export const handleSort = (comments, parentId, sortBy) => (dispatch) => {
-  const sortCommentsBy = sort(comments);
+export const handleSort = (items, parentId, sortBy) => (dispatch) => {
+  const sortCommentsBy = sort(items);
+  const sortedCommentsByVoteScore = sortCommentsBy('voteScore');
+  const sortedCommentsByTimestamp = sortCommentsBy('timestamp');
   switch (sortBy) {
     case 'score_asc':
-      dispatch(sortComments(sortCommentsBy('voteScore'), parentId));
+      dispatch(sortComments(
+        sortedCommentsByVoteScore,
+        parentId,
+      ));
       break;
     case 'score_desc':
-      dispatch(sortComments(sortCommentsBy('voteScore').reverse(), parentId));
+      dispatch(sortComments(
+        sortedCommentsByVoteScore.reverse(),
+        parentId,
+      ));
       break;
     case 'timestamp_asc':
-      dispatch(sortComments(sortCommentsBy('timestamp'), parentId));
+      dispatch(sortComments(
+        sortedCommentsByTimestamp,
+        parentId,
+      ));
       break;
     case 'timestamp_desc':
-      dispatch(sortComments(sortCommentsBy('timestamp').reverse(), parentId));
+      dispatch(sortComments(
+        sortedCommentsByTimestamp.reverse(),
+        parentId,
+      ));
       break;
     default:
       break;
   }
 };
 
-export default function byId(state = {}, action) {
+export default function comments(state = {}, action) {
   switch (action.type) {
     case FETCHING_COMMENTS_SUCCESS:
-      return action.comments.reduce((nextState, curComment) => {
-        nextState[curComment.id] = curComment;
-        return nextState;
-      }, { ...state });
+    case ADD_NEW_COMMENT:
+    case EDIT_COMMENT:
+      return {
+        ...state,
+        ...action.response.entities.comments,
+      };
+    case DELETE_COMMENT: {
+      const { [action.commentId]: omit, ...rest } = state;
+      return { ...rest };
+    }
     case VOTE_COMMENT:
       return {
         ...state,
@@ -158,26 +185,6 @@ export default function byId(state = {}, action) {
             : state[action.commentId].voteScore - 1,
         },
       };
-    case ADD_NEW_COMMENT:
-      return {
-        ...state,
-        [action.comment.id]: {
-          ...state[action.comment.id],
-          ...action.comment,
-        },
-      };
-    case EDIT_COMMENT:
-      return {
-        ...state,
-        [action.comment.id]: {
-          ...state[action.comment.id],
-          ...action.comment,
-        },
-      };
-    case DELETE_COMMENT: {
-      const { [action.commentId]: omit, ...rest } = state;
-      return { ...rest };
-    }
     case DELETE_POST: {
       const newState = { ...state };
       action.comments.forEach(comment => delete newState[comment]);
@@ -195,13 +202,3 @@ export default function byId(state = {}, action) {
       return state;
   }
 }
-/* eslint-enable no-param-reassign */
-
-export const getCommentVoteScore = (state, id) => (state[id]
-  ? state[id].voteScore
-  : 0);
-export const getCommentById = (state, commentId) => state[commentId];
-export const getIsCommentEditFormOpen = (state, commentId) => (
-  state[commentId]
-    ? state[commentId].isCommentEditFormOpen
-    : false);

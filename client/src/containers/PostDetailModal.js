@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Modal from '../components/Modal/Modal';
 import Post from '../components/Post/Post';
-import PostsListContainer from './PostsListContainer';
 import { openModal, closeModal } from '../redux/modules/modal';
-import { getPost } from '../redux/modules/posts';
+import { getPost } from '../redux/selectors/posts';
 import CommentsList from './CommentsList';
+import { redirectToReferrerOrHome } from '../utils/helpers';
 
 class PostDetailModal extends Component {
   componentDidMount() {
@@ -14,13 +14,12 @@ class PostDetailModal extends Component {
   }
   handleCloseModal = () => {
     this.props.closeModal();
-    this.props.history.push('/');
+    redirectToReferrerOrHome(this.props.location.state, this.props.history);
   }
 
   render() {
     return (
       <div>
-        <PostsListContainer match={this.props.match} />
         <Modal
           contentLabel="Post Detail Modal"
           closeModal={this.handleCloseModal}
@@ -44,15 +43,16 @@ PostDetailModal.propTypes = {
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  match: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   post: PropTypes.object,
 };
 
 function mapStateToProps(state, ownProps) {
+  const postId = ownProps.match.params.id;
   return {
-    isOpen: state.modal.isOpen,
-    post: getPost(state.posts, ownProps.match.params.id),
+    isOpen: state.ui.modal.isOpen,
+    post: getPost(state, postId),
   };
 }
 

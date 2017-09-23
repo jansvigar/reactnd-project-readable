@@ -1,4 +1,5 @@
-import { combineReducers } from 'redux';
+import { normalize } from 'normalizr';
+import { postSchema, postListSchema } from '../../redux/schema';
 import categoryPosts from './categoryPosts';
 import { sort } from '../../utils/helpers';
 import {
@@ -16,7 +17,7 @@ import {
   DELETE_COMMENT,
   SORT_COMMENTS,
   fetchAndHandleComments,
-  getCommentById } from './comments';
+} from './comments';
 
 export const FETCHING_POSTS = 'FETCHING_POSTS';
 export const FETCHING_POSTS_SUCCESS = 'FETCHING_POSTS_SUCCESS';
@@ -32,9 +33,9 @@ const fetchingPosts = category => ({
   category,
 });
 
-const fetchingPostsSuccess = (data, category) => ({
+const fetchingPostsSuccess = (response, category) => ({
   type: FETCHING_POSTS_SUCCESS,
-  posts: data,
+  response,
   category,
 });
 
@@ -44,14 +45,17 @@ const fetchingPostsError = (error, category) => ({
   category,
 });
 
-const addNewPost = post => ({
+const addNewPost = (response, category) => ({
   type: ADD_NEW_POST,
-  post,
+  response,
+  category,
 });
 
-const editPost = post => ({
+const editPost = (response, newCategory, currentCategory) => ({
   type: EDIT_POST,
-  post,
+  response,
+  newCategory,
+  currentCategory,
 });
 
 const deletePost = (postId, category, comments) => ({
@@ -73,103 +77,105 @@ const sortPosts = (sortedPosts, category) => ({
   category,
 });
 
-
-export const votePostById = (postId, option, e) => {
-  e.stopPropagation();
-  return (dispatch) => {
-    const voteUpPost = votePost(postId, 'upVote');
-    const voteDownPost = votePost(postId, 'downVote');
-    const applyVote = opt => (opt === 'upVote' ? dispatch(voteUpPost) : dispatch(voteDownPost));
-    const revertVote = opt => (opt === 'upVote' ? dispatch(voteDownPost) : dispatch(voteUpPost));
-    applyVote(option);
-    apiVotePost(postId, option)
-      .catch(() => {
-        revertVote(option);
-      });
-  };
-};
-
 export const fetchAndHandlePosts = category => (dispatch) => {
   dispatch(fetchingPosts(category));
   const getPosts = category === 'all' ? apiGetAllPosts : apiGetPostsByCategory;
   getPosts(category)
-    .then((data) => {
-      dispatch(fetchingPostsSuccess(data, category));
-      data.forEach((post) => {
-        dispatch(fetchAndHandleComments(post.id));
-      });
-    })
-    .catch((error) => {
-      console.warn(error);
-      dispatch(fetchingPostsError(error, category));
-    });
+    .then((response) => {
+      const normalizedResponse = normalize(response, postListSchema);
+      dispatch(fetchingPostsSuccess(normalizedResponse, category));
+      normalizedResponse.result.map(postId => dispatch(fetchAndHandleComments(postId)));
+    },
+    error => dispatch(fetchingPostsError(error, category)));
 };
 
 export const saveNewPost = post => (dispatch) => {
+  const category = post.category;
   apiAddNewPost(post)
-    .then((data) => {
-      dispatch(addNewPost(data));
-    })
-    .catch(error => console.warn(error));
+    .then(
+      (response) => {
+        const normalizedResponse = normalize(response, postSchema);
+        dispatch(addNewPost(normalizedResponse, category));
+      },
+      error => error,
+    );
+};
+
+export const updatePost = (post, initialCategory) => (dispatch) => {
+  const newCategory = post.category;
+  const currentCategory = initialCategory;
+  apiUpdatePost(post)
+    .then(
+      (response) => {
+        const normalizedResponse = normalize(response, postSchema);
+        dispatch(editPost(normalizedResponse, newCategory, currentCategory));
+      },
+      error => error,
+    );
 };
 
 export const disablePost = (postId, category, comments) => (dispatch) => {
   apiDeletePost(postId)
-    .then(() => {
-      dispatch(deletePost(postId, category, comments));
-    })
-    .catch(error => console.warn(error));
+    .then(
+      () => dispatch(deletePost(postId, category, comments)),
+      error => error,
+    );
 };
 
-export const updatePost = post => (dispatch) => {
-  /* eslint-disable no-debugger */
-  apiUpdatePost(post)
-    .then((data) => {
-      dispatch(editPost(data));
-    })
-    .catch(error => console.warn(error));
+export const votePostById = (postId, option) => (dispatch) => {
+  const voteUpPost = votePost(postId, 'upVote');
+  const voteDownPost = votePost(postId, 'downVote');
+  const applyVote = opt => (opt === 'upVote' ? dispatch(voteUpPost) : dispatch(voteDownPost));
+  const revertVote = opt => (opt === 'upVote' ? dispatch(voteDownPost) : dispatch(voteUpPost));
+  applyVote(option);
+  apiVotePost(postId, option)
+    .catch(() => {
+      revertVote(option);
+    });
 };
 
-export const handleSort = (posts, parentId, sortBy) => (dispatch) => {
-  const sortPostsBy = sort(posts);
+export const handleSort = (items, parentId, sortBy) => (dispatch) => {
+  const sortPostsBy = sort(items);
+  const sortedPostsByVoteScore = sortPostsBy('voteScore').map(post => post.id);
+  const sortedPostsByTimestamp = sortPostsBy('timestamp').map(post => post.id);
   switch (sortBy) {
     case 'score_asc':
-      dispatch(sortPosts(sortPostsBy('voteScore'), parentId));
+      dispatch(sortPosts(
+        sortedPostsByVoteScore,
+        parentId,
+      ));
       break;
     case 'score_desc':
-      dispatch(sortPosts(sortPostsBy('voteScore').reverse(), parentId));
+      dispatch(sortPosts(
+        sortedPostsByVoteScore.reverse(),
+        parentId,
+      ));
       break;
     case 'timestamp_asc':
-      dispatch(sortPosts(sortPostsBy('timestamp'), parentId));
+      dispatch(sortPosts(
+        sortedPostsByTimestamp,
+        parentId,
+      ));
       break;
     case 'timestamp_desc':
-      dispatch(sortPosts(sortPostsBy('timestamp').reverse(), parentId));
+      dispatch(sortPosts(
+        sortedPostsByTimestamp.reverse(),
+        parentId,
+      ));
       break;
     default:
       break;
   }
 };
 
-/* eslint no-param-reassign:
-  ["error",
-    { "props": true,
-      "ignorePropertyModificationsFor": ["nextState"] }
-  ] */
-function byId(state = {}, action) {
+export default function posts(state = {}, action) {
   switch (action.type) {
     case FETCHING_POSTS_SUCCESS:
-      return action.posts.reduce((nextState, curPost) => {
-        nextState[curPost.id] = curPost;
-        return nextState;
-      }, { ...state });
     case ADD_NEW_POST:
     case EDIT_POST:
       return {
         ...state,
-        [action.post.id]: {
-          ...state[action.post.id],
-          ...action.post,
-        },
+        ...action.response.entities.posts,
       };
     case DELETE_POST: {
       const { [action.postId]: omit, ...rest } = state;
@@ -191,18 +197,18 @@ function byId(state = {}, action) {
         [action.postId]: {
           ...state[action.postId],
           comments: [
-            ...action.comments.map(comment => comment.id),
+            ...action.response.result,
           ],
         },
       };
     case ADD_NEW_COMMENT:
       return {
         ...state,
-        [action.comment.parentId]: {
-          ...state[action.comment.parentId],
+        [action.postId]: {
+          ...state[action.postId],
           comments: [
-            ...state[action.comment.parentId].comments,
-            action.comment.id,
+            ...state[action.postId].comments,
+            action.response.result,
           ],
         },
       };
@@ -238,7 +244,7 @@ function byId(state = {}, action) {
   }
 }
 
-function byCategories(state = {}, action) {
+export function postsByCategory(state = {}, action) {
   switch (action.type) {
     case FETCHING_POSTS_SUCCESS:
     case SORT_POSTS:
@@ -246,51 +252,32 @@ function byCategories(state = {}, action) {
         ...state,
         [action.category]: categoryPosts(action.category)(state[action.category], action),
       };
-    case DELETE_POST: {
-      const categoryData = action.category
-        ? { [action.category]: categoryPosts(action.category)(state[action.category], action) }
-        : null;
+    case ADD_NEW_POST:
       return {
         ...state,
-        all: categoryPosts('all')(state.all, action),
-        ...categoryData,
+        [action.category]: categoryPosts(action.category)(state[action.category], action),
+        all: {
+          ...state.all,
+          ids: [...state.all.ids, action.response.result],
+        },
       };
-    }
+    case EDIT_POST:
+      return {
+        ...state,
+        [action.newCategory]: categoryPosts(action.newCategory)(state[action.newCategory], action),
+        [action.currentCategory]: (
+          categoryPosts(action.currentCategory)(state[action.currentCategory], action)),
+      };
+    case DELETE_POST:
+      return {
+        ...state,
+        [action.category]: categoryPosts(action.category)(state[action.category], action),
+        all: {
+          ...state.all,
+          ids: state.all && state.all.ids.filter(id => id !== action.postId),
+        },
+      };
     default:
       return state;
   }
 }
-
-export default combineReducers({
-  byId,
-  byCategories,
-});
-
-export const getIds = (state, category) => (state.byCategories[category]
-  ? state.byCategories[category].ids
-  : []);
-export const getPost = (state, id) => (state.byId[id]);
-export const getIsFetching = (state, category) => (state.byCategories[category]
-  ? state.byCategories[category].isFetching
-  : false);
-export const getErrorMessage = (state, category) => (state.byCategories[category]
-  ? state.byCategories[category].error
-  : '');
-export const getPostsByCategory = (state, category) => {
-  const ids = getIds(state, category);
-  return ids ? ids.map(id => getPost(state, id)) : [];
-};
-export const getPostVoteScore = (state, id) => (state[id]
-  ? state[id].voteScore
-  : 0);
-export const getCommentsByPost = (state, id) => (
-  state.posts.byId[id] && state.posts.byId[id].comments
-    ? state.posts.byId[id].comments.map(commentId => (
-      getCommentById(state.comments, commentId)))
-    : []
-);
-export const getIsCommentAddFormOpen = (state, id) => (
-  state.posts.byId[id]
-    ? state.posts.byId[id].isCommentAddFormOpen
-    : false
-);

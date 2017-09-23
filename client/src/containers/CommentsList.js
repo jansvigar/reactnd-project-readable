@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 import Comment from '../components/Comment/Comment';
 import CommentForm from '../components/CommentForm/CommentForm';
 import SortList from '../components/SortList/SortList';
-import { getCommentsByPost, getIsCommentAddFormOpen } from '../redux/modules/posts';
+import { getIsCommentAddFormOpen } from '../redux/selectors/posts';
+import { getCommentsByPost } from '../redux/selectors/comments';
 import {
+  fetchAndHandleComments,
   saveNewComment,
   updateComment,
   toggleCommentAddForm,
@@ -13,6 +15,11 @@ import {
 } from '../redux/modules/comments';
 
 class CommentsList extends Component {
+  componentDidMount() {
+    if (this.props.comments.length === 0) {
+      this.props.fetchAndHandleComments(this.props.postId);
+    }
+  }
   toggleCommentAddForm = () => {
     const postId = this.props.postId;
     this.props.toggleCommentAddForm(postId);
@@ -55,6 +62,7 @@ class CommentsList extends Component {
 
 CommentsList.propTypes = {
   comments: PropTypes.array.isRequired,
+  fetchAndHandleComments: PropTypes.func.isRequired,
   saveNewComment: PropTypes.func.isRequired,
   updateComment: PropTypes.func.isRequired,
   isCommentAddFormOpen: PropTypes.bool,
@@ -72,5 +80,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
   mapStateToProps,
-  { saveNewComment, updateComment, toggleCommentAddForm, handleSort },
+  { fetchAndHandleComments, saveNewComment, updateComment, toggleCommentAddForm, handleSort },
 )(CommentsList);

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { voteCommentById, getCommentVoteScore } from '../redux/modules/comments';
+import { voteCommentById } from '../redux/modules/comments';
+import { getCommentVoteScore } from '../redux/selectors/comments';
 import VoteScore from '../components/VoteScore/VoteScore';
 
 class CommentVoteScore extends Component {
@@ -34,9 +35,10 @@ CommentVoteScore.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
+  const commentId = ownProps.commentId;
   return {
-    commentId: ownProps.commentId,
-    voteScore: getCommentVoteScore(state.comments, ownProps.commentId),
+    commentId,
+    voteScore: getCommentVoteScore(state, commentId),
   };
 }
 

@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import PostsList from '../components/PostsList/PostsList';
-import { fetchAndHandlePosts,
-  getPostsByCategory,
+import * as fromPosts from '../redux/modules/posts';
+import {
+  makeGetPostsByCategory,
   getIsFetching,
   getErrorMessage,
-  handleSort as onSort,
-} from '../redux/modules/posts';
+  getShouldFetch,
+} from '../redux/selectors/posts';
 
 class PostsListContainer extends Component {
   static propTypes = {
@@ -18,26 +19,40 @@ class PostsListContainer extends Component {
     error: PropTypes.string,
     category: PropTypes.string.isRequired,
     handleSort: PropTypes.func.isRequired,
+    shouldFetch: PropTypes.bool.isRequired,
+    match: PropTypes.object,
+    location: PropTypes.object,
   }
 
   componentDidMount() {
-    this.props.fetchAndHandlePosts(this.props.category);
+    if (this.props.posts.length === 0 || this.props.shouldFetch) {
+      this.props.fetchAndHandlePosts(this.props.category);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.category !== prevProps.category) {
+    if (this.props.category !== prevProps.category &&
+      (this.props.shouldFetch || this.props.posts.length === 0)) {
       this.props.fetchAndHandlePosts(this.props.category);
     }
   }
 
   render() {
-    const { posts, category, handleSort, isFetching, error } = this.props;
+    const { posts, category,
+      handleSort, isFetching, error,
+      match, location } = this.props;
     return (
       <div>
         {error && <ErrorMessage error={error} />}
         {isFetching && !error
           ? <div>Loading...</div>
-          : <PostsList posts={posts} category={category} handleSort={handleSort} />
+          : <PostsList
+            posts={posts}
+            category={category}
+            handleSort={handleSort}
+            match={match}
+            location={location}
+          />
         }
       </div>
     );
@@ -46,15 +61,18 @@ class PostsListContainer extends Component {
 
 function mapStateToProps(state, ownProps) {
   const category = ownProps.match.params.category || 'all';
+  const getPostsByCategory = makeGetPostsByCategory();
   return {
-    posts: getPostsByCategory(state.posts, category),
-    isFetching: getIsFetching(state.posts, category),
-    error: getErrorMessage(state.posts, category),
+    posts: getPostsByCategory(state, category),
+    isFetching: getIsFetching(state, category),
+    error: getErrorMessage(state, category),
+    shouldFetch: getShouldFetch(state, category),
     category,
   };
 }
 
 export default connect(
   mapStateToProps,
-  { fetchAndHandlePosts, handleSort: onSort },
+  { fetchAndHandlePosts: fromPosts.fetchAndHandlePosts,
+    handleSort: fromPosts.handleSort },
 )(PostsListContainer);

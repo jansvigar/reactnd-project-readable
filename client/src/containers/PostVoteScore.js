@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { votePostById, getPostVoteScore } from '../redux/modules/posts';
+import { votePostById } from '../redux/modules/posts';
+import { getPostVoteScore } from '../redux/selectors/posts';
 import VoteScore from '../components/VoteScore/VoteScore';
 
 class PostVoteScore extends Component {
-  handleVoteUpClick = event => this.props.votePostById(this.props.postId, 'upVote', event)
-  handleVoteDownClick = event => this.props.votePostById(this.props.postId, 'downVote', event)
+  handleVoteUpClick = (event) => {
+    event.stopPropagation();
+    this.props.votePostById(this.props.postId, 'upVote');
+  }
+  handleVoteDownClick = (event) => {
+    event.stopPropagation();
+    this.props.votePostById(this.props.postId, 'downVote');
+  };
 
   render() {
     const { voteScore } = this.props;
@@ -27,9 +34,10 @@ PostVoteScore.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
+  const postId = ownProps.postId;
   return {
-    postId: ownProps.postId,
-    voteScore: getPostVoteScore(state.posts.byId, ownProps.postId),
+    postId,
+    voteScore: getPostVoteScore(state, postId),
   };
 }
 

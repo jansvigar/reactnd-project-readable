@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
-import { v4 } from 'uuid';
-import { withRouter } from 'react-router-dom';
 import './PostForm.css';
 
 /* eslint-disable react/prop-types */
@@ -61,80 +59,63 @@ const maxLength50 = maxLength(50);
 const maxLength140 = maxLength(140);
 const maxLength500 = maxLength(500);
 
-class PostForm extends Component {
-  onSubmitNewPost = (values) => {
-    const newPostData = {
-      id: v4(),
-      timestamp: Date.now(),
-      ...values,
-    };
-    this.props.onSavePost(newPostData);
-    this.props.history.push('/');
-  }
-
-  onSubmitEditPost = (values) => {
-    this.props.onUpdatePost(values);
-    this.props.history.push('/');
-  }
-
-  render() {
-    const { handleSubmit, pristine, reset, submitting, match } = this.props;
-    return (
-      <div>
-        <h1>{match.params.id ? 'Edit Post' : 'Add New Post'}</h1>
-        <hr />
-        <form className="post-form" onSubmit={handleSubmit(match.params.id ? this.onSubmitEditPost : this.onSubmitNewPost)}>
-          <Field
-            id="rdTitle"
-            name="title"
-            type="text"
-            component={renderInputField}
-            label="Title"
-            placeholder="Enter the post title"
-            validate={[required, maxLength140]}
-          />
-          <Field
-            id="rdBody"
-            name="body"
-            component={renderTextAreaField}
-            label="Body"
-            placeholder="Write some content here"
-            validate={[required, maxLength500]}
-          />
-          <Field
-            id="rdAuthor"
-            name="author"
-            component={renderInputField}
-            type="text"
-            label="Author"
-            placeholder="Enter the author of this post"
-            validate={[required, maxLength50]}
-          />
-          <Field
-            id="rdCategory"
-            name="category"
-            component={renderSelectField}
-            label="Category"
-            validate={[required]}
-          >
-            <option value="">Select a category</option>
-            <option value="react">React</option>
-            <option value="redux">Redux</option>
-            <option value="udacity">Udacity</option>
-          </Field>
-          <div>
-            <button type="submit" disabled={pristine || submitting}>
+const PostForm = (props) => {
+  const { handleSubmit, pristine, reset, submitting, match } = props;
+  return (
+    <div>
+      <h1>{match.params.id ? 'Edit Post' : 'Add New Post'}</h1>
+      <hr />
+      <form className="post-form" onSubmit={handleSubmit(match.params.id ? props.onUpdatePost : props.onSavePost)}>
+        <Field
+          id="rdTitle"
+          name="title"
+          type="text"
+          component={renderInputField}
+          label="Title"
+          placeholder="Enter the post title"
+          validate={[required, maxLength140]}
+        />
+        <Field
+          id="rdBody"
+          name="body"
+          component={renderTextAreaField}
+          label="Body"
+          placeholder="Write some content here"
+          validate={[required, maxLength500]}
+        />
+        <Field
+          id="rdAuthor"
+          name="author"
+          component={renderInputField}
+          type="text"
+          label="Author"
+          placeholder="Enter the author of this post"
+          validate={[required, maxLength50]}
+        />
+        <Field
+          id="rdCategory"
+          name="category"
+          component={renderSelectField}
+          label="Category"
+          validate={[required]}
+        >
+          <option value="">Select a category</option>
+          <option value="react">React</option>
+          <option value="redux">Redux</option>
+          <option value="udacity">Udacity</option>
+        </Field>
+        <div>
+          <button type="submit" disabled={pristine || submitting}>
             Submit
-            </button>
-            <button type="button" disabled={pristine || submitting} onClick={reset}>
+          </button>
+          <button type="button" disabled={pristine || submitting} onClick={reset}>
             Reset
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-  }
-}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 PostForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -143,10 +124,9 @@ PostForm.propTypes = {
   submitting: PropTypes.bool.isRequired,
   onSavePost: PropTypes.func.isRequired,
   onUpdatePost: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
 };
 
 export default reduxForm({
   form: 'postForm',
-})(withRouter(PostForm));
+})(PostForm);

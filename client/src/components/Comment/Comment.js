@@ -6,7 +6,8 @@ import {
   FaTimesCircle } from 'react-icons/lib/fa';
 import CommentVoteScore from '../../containers/CommentVoteScore';
 import CommentForm from '../CommentForm/CommentForm';
-import { toggleCommentEditForm, getIsCommentEditFormOpen, updateComment, disableComment } from '../../redux/modules/comments';
+import { toggleCommentEditForm, updateComment, disableComment } from '../../redux/modules/comments';
+import { getIsCommentEditFormOpen } from '../../redux/selectors/comments';
 import { convertUnixTimestampToDate } from '../../utils/helpers';
 import './Comment.css';
 
@@ -56,7 +57,7 @@ Comment.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    isCommentEditFormOpen: getIsCommentEditFormOpen(state.comments, ownProps.comment.id),
+    isCommentEditFormOpen: getIsCommentEditFormOpen(state, ownProps.comment.id),
   };
 }
 

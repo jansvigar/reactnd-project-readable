@@ -3,6 +3,7 @@ import { FETCHING_POSTS,
   FETCHING_POSTS_SUCCESS,
   FETCHING_POSTS_ERROR,
   ADD_NEW_POST,
+  EDIT_POST,
   DELETE_POST,
   SORT_POSTS } from './posts';
 /* eslint-disable no-case-declarations */
@@ -11,17 +12,25 @@ function categoryPosts(category) {
     switch (action.type) {
       case FETCHING_POSTS_SUCCESS:
         return action.category === category
-          ? action.posts.map(post => post.id)
+          ? action.response.result
           : state;
       case ADD_NEW_POST:
         return action.category === category
-          ? [...state, action.post.id]
+          ? [...state, action.response.result]
           : state;
+      case EDIT_POST:
+        if (action.newCategory !== action.currentCategory) {
+          return action.newCategory === category
+            ? [...state, action.response.result]
+            : state.filter(id => id !== action.response.result);
+        }
+        return state;
       case DELETE_POST:
-        return state.filter(id => id !== action.postId);
+        return action.category === category
+          ? state.filter(id => id !== action.postId)
+          : state;
       case SORT_POSTS:
-        const newPosts = action.sortedPosts.map(post => post.id);
-        return newPosts;
+        return action.sortedPosts;
       default:
         return state;
     }
@@ -43,13 +52,24 @@ function categoryPosts(category) {
     }
   };
 
-  const errorMessage = (state = '', action) => {
+  const shouldFetch = (state = true, action) => {
+    switch (action.type) {
+      case FETCHING_POSTS_SUCCESS:
+        return false;
+      case FETCHING_POSTS_ERROR:
+        return false;
+      default:
+        return state;
+    }
+  };
+
+  const errorMessage = (state = null, action) => {
     if (action.category !== category) {
       return state;
     }
     switch (action.type) {
       case FETCHING_POSTS_SUCCESS:
-        return '';
+        return null;
       case FETCHING_POSTS_ERROR:
         return action.error;
       default:
@@ -61,6 +81,7 @@ function categoryPosts(category) {
     ids,
     isFetching,
     errorMessage,
+    shouldFetch,
   });
 }
 

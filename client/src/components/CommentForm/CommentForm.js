@@ -50,7 +50,7 @@ class CommentForm extends Component {
       timestamp: Date.now(),
       ...values,
     };
-    this.props.onSaveComment(newCommentData);
+    this.props.onSaveComment(newCommentData, this.props.postId);
     this.props.onToggleCommentAdd();
   }
 
@@ -59,7 +59,7 @@ class CommentForm extends Component {
       ...values,
       isCommentEditFormOpen: false,
     };
-    this.props.onUpdateComment(updatedCommentData);
+    this.props.onUpdateComment(updatedCommentData, this.props.postId);
   }
   render() {
     const { handleSubmit, pristine,

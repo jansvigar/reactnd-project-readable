@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import { normalize } from 'normalizr';
+import { categoryListSchema } from '../schema';
 import { getAllCategories as getAllCategoriesAPI } from '../../utils/api';
 
 /* Categories Action Types */
@@ -16,9 +18,9 @@ const fetchingCategoriesError = () => ({
   error: 'Error fetching categories',
 });
 
-const fetchingCategoriesSuccess = data => ({
+const fetchingCategoriesSuccess = response => ({
   type: FETCHING_CATEGORIES_SUCCESS,
-  categories: data,
+  response,
 });
 
 /* Categories Action Thunk */
@@ -26,33 +28,21 @@ export const fetchAndHandleCategories = () => (dispatch) => {
   dispatch(fetchingCategories());
   getAllCategoriesAPI()
     .then(
-      data => dispatch(fetchingCategoriesSuccess(data)),
+      (response) => {
+        const normalizedResponse = normalize(response, categoryListSchema);
+        dispatch(fetchingCategoriesSuccess(normalizedResponse));
+      },
       error => dispatch(fetchingCategoriesError(error)),
     );
 };
 
 /* Categories Reducers */
-
-/* eslint-disable no-param-reassign */
-function byName(state = {}, action) {
-  switch (action.type) {
-    case FETCHING_CATEGORIES_SUCCESS:
-      return action.categories.reduce((nextState, category) => {
-        nextState[category.name] = category;
-        return nextState;
-      }, { ...state });
-    default:
-      return state;
-  }
-}
-/* eslint-enable no-param-reassign */
-
 function names(state = [], action) {
   switch (action.type) {
     case FETCHING_CATEGORIES_SUCCESS :
       return [
         ...state,
-        ...action.categories.map(category => category.name),
+        ...action.response.result,
       ];
     default :
       return state;
@@ -82,9 +72,20 @@ function errorMessage(state = null, action) {
   }
 }
 
-export default combineReducers({
-  byName,
+export const allCategories = combineReducers({
   names,
   isFetching,
   errorMessage,
 });
+
+export default function categories(state = {}, action) {
+  switch (action.type) {
+    case FETCHING_CATEGORIES_SUCCESS:
+      return {
+        ...state,
+        ...action.response.entities.categories,
+      };
+    default:
+      return state;
+  }
+}

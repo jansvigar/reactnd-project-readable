@@ -40,3 +40,9 @@ export const sort = (items = []) => (sortBy) => {
 };
 
 /* eslint-enable no-param-reassign, no-nested-ternary */
+
+export const redirectToReferrerOrHome = (locationState, history) => {
+  if (locationState && locationState.prevPath) {
+    history.push(locationState.prevPath.pathname);
+  } else { history.push('/'); }
+};

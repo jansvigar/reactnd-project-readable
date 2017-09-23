@@ -1,0 +1,17 @@
+import { createSelector } from 'reselect';
+
+const getCommentIdsByPost = (state, postId) => (state.entities.posts[postId].comments || []);
+const getCommentObjects = state => state.entities.comments;
+export const getCommentsByPost = createSelector(
+  [getCommentIdsByPost, getCommentObjects],
+  (ids, comments) => ids.map(id => comments[id]),
+);
+
+export const getCommentVoteScore = (state, id) => (state.entities.comments[id]
+  ? state.entities.comments[id].voteScore
+  : 0);
+export const getCommentById = (state, commentId) => state.entities.comments[commentId];
+export const getIsCommentEditFormOpen = (state, commentId) => (
+  state.entities.comments[commentId]
+    ? state.entities.comments[commentId].isCommentEditFormOpen
+    : false);

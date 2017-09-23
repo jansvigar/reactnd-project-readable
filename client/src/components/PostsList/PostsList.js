@@ -7,7 +7,7 @@ import SortList from '../SortList/SortList';
 import { capitalize } from '../../utils/helpers';
 
 
-const PostsList = ({ posts, category, handleSort }) => (
+const PostsList = ({ posts, category, handleSort, location, match }) => (
   <div>
     <div className="subheader">
       <h2><Link to="/">All Categories</Link>{`${category !== 'all' ? ` > ${capitalize(category)}` : ''}` }</h2>
@@ -20,7 +20,10 @@ const PostsList = ({ posts, category, handleSort }) => (
 
     </div>
     <div className="add-new-post">
-      <Link to="/posts/new"><FaPlus /><span>{'Add new post'}</span></Link>
+      <Link to={{ pathname: '/posts/new', state: { prevPath: location, prevMatch: match } }}>
+        <FaPlus />
+        <span>{'Add new post'}</span>
+      </Link>
     </div>
   </div>
 );
@@ -29,6 +32,8 @@ PostsList.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.object).isRequired,
   category: PropTypes.string.isRequired,
   handleSort: PropTypes.func.isRequired,
+  location: PropTypes.object,
+  match: PropTypes.object,
 };
 
 export default PostsList;
