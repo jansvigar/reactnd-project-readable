@@ -4,6 +4,8 @@ import {
   FETCHING_COMMENTS_SUCCESS,
   FETCHING_COMMENTS_ERROR,
   ADD_NEW_COMMENT,
+  DELETE_COMMENT,
+  SORT_COMMENTS,
 } from './comments';
 
 function postComments(postId) {
@@ -11,11 +13,19 @@ function postComments(postId) {
     switch (action.type) {
       case FETCHING_COMMENTS_SUCCESS:
         return action.postId === postId
-          ? [...state, ...action.response.result]
+          ? action.response.result
           : state;
       case ADD_NEW_COMMENT:
         return action.postId === postId
           ? [...state, action.response.result]
+          : state;
+      case DELETE_COMMENT:
+        return action.postId === postId
+          ? state.filter(id => id !== action.commentId)
+          : state;
+      case SORT_COMMENTS:
+        return action.postId === postId
+          ? action.sortedComments.map(comment => comment.id)
           : state;
       default:
         return state;

@@ -73,10 +73,10 @@ export const toggleCommentEditForm = commentId => ({
   commentId,
 });
 
-export const sortComments = (sortedComments, parentId) => ({
+export const sortComments = (sortedComments, postId) => ({
   type: SORT_COMMENTS,
   sortedComments,
-  parentId,
+  postId,
 });
 
 export const fetchAndHandleComments = postId => (dispatch) => {
@@ -131,7 +131,7 @@ export const voteCommentById = (commentId, option) => (dispatch) => {
     });
 };
 
-export const handleSort = (items, parentId, sortBy) => (dispatch) => {
+export const handleSort = (items, postId, sortBy) => (dispatch) => {
   const sortCommentsBy = sort(items);
   const sortedCommentsByVoteScore = sortCommentsBy('voteScore');
   const sortedCommentsByTimestamp = sortCommentsBy('timestamp');
@@ -139,25 +139,25 @@ export const handleSort = (items, parentId, sortBy) => (dispatch) => {
     case 'score_asc':
       dispatch(sortComments(
         sortedCommentsByVoteScore,
-        parentId,
+        postId,
       ));
       break;
     case 'score_desc':
       dispatch(sortComments(
         sortedCommentsByVoteScore.reverse(),
-        parentId,
+        postId,
       ));
       break;
     case 'timestamp_asc':
       dispatch(sortComments(
         sortedCommentsByTimestamp,
-        parentId,
+        postId,
       ));
       break;
     case 'timestamp_desc':
       dispatch(sortComments(
         sortedCommentsByTimestamp.reverse(),
-        parentId,
+        postId,
       ));
       break;
     default:
@@ -213,6 +213,7 @@ export function commentsByPost(state = {}, action) {
     case FETCHING_COMMENTS_ERROR:
     case ADD_NEW_COMMENT:
     case DELETE_COMMENT:
+    case SORT_COMMENTS:
       return {
         ...state,
         [action.postId]: postComments(action.postId)(state[action.postId], action),
