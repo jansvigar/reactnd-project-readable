@@ -126,12 +126,12 @@ hr {
     padding: 10px 15px;
     font-size: 1em;
     color: #fff;
-    background-image: linear-gradient(#4f93ce,#285f8f);
+    background-image: linear-gradient(#FF442B,#ff6550);
     border: 1px solid #285f8f;
   }
 
 .comment-form>div button[type=submit]:hover {
-    background-image: linear-gradient(#63a0d4,#337ab7);
+    background-image: linear-gradient(#f95e49,#f66a57);
 }
 
 .comment-form>div button[type=button] {

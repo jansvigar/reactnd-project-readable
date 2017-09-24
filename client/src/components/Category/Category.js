@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import { capitalize } from '../../utils/helpers';
-import './Category.css';
 
 const Category = ({ name, path }) => (
   <NavLink activeClassName="active" to={`/${path}`}>

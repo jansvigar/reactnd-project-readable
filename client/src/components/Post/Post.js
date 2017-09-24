@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { convertUnixTimestampToDate } from '../../utils/helpers';
 import PostFooterContainer from '../../containers/PostFooterContainer';
 import PostVoteScore from '../../containers/PostVoteScore';
+import './Post.css';
 
 const Post = ({
   id,

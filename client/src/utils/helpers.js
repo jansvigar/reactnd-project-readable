@@ -5,7 +5,7 @@ export const capitalize = str =>
     .map(word => word.slice(0, 1).toUpperCase() + word.slice(1));
 
 export const convertUnixTimestampToDate = timestamp =>
-  moment(timestamp).format('MMMM Do, YYYY');
+  moment(timestamp).format('LLLL');
 
 /* eslint-disable no-param-reassign, no-nested-ternary */
 const compare = (a, b) => {

@@ -5,7 +5,7 @@ import { FaPlus } from 'react-icons/lib/fa';
 import Post from '../Post/Post';
 import SortList from '../SortList/SortList';
 import { capitalize } from '../../utils/helpers';
-
+import './PostsList.css';
 
 const PostsList = ({ posts, category, handleSort, location, match }) => (
   <div>

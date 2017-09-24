@@ -22,13 +22,6 @@
   font-size: 25px;
 }
 
-.comment .comment-content>*{
-}
-
-.comment .comment-header {
-
-}
-
 .comment .comment-body {
   border: 1px solid rgb(120, 120, 120);
   border-radius: 8px;

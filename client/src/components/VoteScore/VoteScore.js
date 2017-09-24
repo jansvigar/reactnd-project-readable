@@ -15,7 +15,7 @@ const VoteScore = (props) => {
       >
         <FaCaretSquareOUp />
       </span>
-      <div className="vote-score"><span>{score}</span></div>
+      <div className={`vote-score ${score < 0 ? 'negative' : 'positive'}`}><span>{score}</span></div>
       <span
         role="button"
         tabIndex="0"

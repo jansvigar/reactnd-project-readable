@@ -1,0 +1,14 @@
+.post-footer span, .post-footer a {
+  text-decoration: underline;
+  margin-left: 5px;
+}
+
+.post-footer svg {
+  font-size:1.4em;
+  margin-left: 10px;
+}
+
+.post-footer a:hover {
+  text-decoration:none;
+  color: rgb(168, 168, 168);
+}

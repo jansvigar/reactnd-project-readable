@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   FaCommentingO, FaEdit,
   FaTimesCircle } from 'react-icons/lib/fa';
+import './PostFooter.css';
 
 const PostFooter = (props) => {
   const onDelete = (event) => {
@@ -14,7 +15,7 @@ const PostFooter = (props) => {
     <div className="post-footer">
       <span className="post-comments-count">
         <FaCommentingO />
-        <a href="">{`${props.comments ? props.comments.length : '0'} Comments`}</a>
+        <span href="">{`${props.comments ? props.comments.length : '0'} Comments`}</span>
       </span>
       <span className="post-edit-link">
         <FaEdit />
