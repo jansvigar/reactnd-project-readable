@@ -246,7 +246,9 @@ export default function posts(state = {}, action) {
 
 export function postsByCategory(state = {}, action) {
   switch (action.type) {
+    case FETCHING_POSTS:
     case FETCHING_POSTS_SUCCESS:
+    case FETCHING_POSTS_ERROR:
     case SORT_POSTS:
       return {
         ...state,

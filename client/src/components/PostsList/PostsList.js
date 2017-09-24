@@ -14,9 +14,10 @@ const PostsList = ({ posts, category, handleSort, location, match }) => (
       <SortList items={posts} parentId={category} handleSort={handleSort} />
     </div>
     <div className="list-posts">
-      {posts && posts.map(post => (
+      {posts.length > 0 ? posts.map(post => (
         <Post key={post.id} {...post} />
-      ))}
+      ))
+        : <div>There are no posts to display</div>}
 
     </div>
     <div className="add-new-post">

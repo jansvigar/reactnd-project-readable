@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import PostsList from '../components/PostsList/PostsList';
 import * as fromPosts from '../redux/modules/posts';
+import Spinner from '../components/Spinner/Spinner';
 import {
   makeGetPostsByCategory,
   getIsFetching,
@@ -16,7 +17,7 @@ class PostsListContainer extends Component {
     posts: PropTypes.arrayOf(PropTypes.object).isRequired,
     fetchAndHandlePosts: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
-    error: PropTypes.string,
+    errorMessage: PropTypes.string,
     category: PropTypes.string.isRequired,
     handleSort: PropTypes.func.isRequired,
     shouldFetch: PropTypes.bool.isRequired,
@@ -37,15 +38,18 @@ class PostsListContainer extends Component {
     }
   }
 
+  onRetry = () => {
+    this.props.fetchAndHandlePosts(this.props.category);
+  }
+
   render() {
     const { posts, category,
-      handleSort, isFetching, error,
+      handleSort, isFetching, errorMessage,
       match, location } = this.props;
     return (
       <div>
-        {error && <ErrorMessage error={error} />}
-        {isFetching && !error
-          ? <div>Loading...</div>
+        {isFetching && !errorMessage
+          ? <Spinner />
           : <PostsList
             posts={posts}
             category={category}
@@ -54,6 +58,11 @@ class PostsListContainer extends Component {
             location={location}
           />
         }
+        {errorMessage &&
+          <ErrorMessage
+            error={errorMessage}
+            onRetry={this.onRetry}
+          />}
       </div>
     );
   }
@@ -65,7 +74,7 @@ function mapStateToProps(state, ownProps) {
   return {
     posts: getPostsByCategory(state, category),
     isFetching: getIsFetching(state, category),
-    error: getErrorMessage(state, category),
+    errorMessage: getErrorMessage(state, category),
     shouldFetch: getShouldFetch(state, category),
     category,
   };

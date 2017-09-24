@@ -3,8 +3,8 @@ import { FaSpinner } from 'react-icons/lib/fa/';
 import './Spinner.css';
 
 const Spinner = () => (
-  <div className="spinner">
-    <FaSpinner />
+  <div>
+    <FaSpinner className="spinner" />
   </div>
 );
 

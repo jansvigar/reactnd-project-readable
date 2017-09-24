@@ -53,6 +53,9 @@ function categoryPosts(category) {
   };
 
   const shouldFetch = (state = true, action) => {
+    if (action.category !== category) {
+      return state;
+    }
     switch (action.type) {
       case FETCHING_POSTS_SUCCESS:
         return false;

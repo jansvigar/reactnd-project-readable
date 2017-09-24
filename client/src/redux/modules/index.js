@@ -16,3 +16,4 @@ export const ui = combineReducers({
 
 export { allCategories } from './categories';
 export { postsByCategory } from './posts';
+export { commentsByPost } from './comments';

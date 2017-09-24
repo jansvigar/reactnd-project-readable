@@ -19,15 +19,19 @@ class CategoriesListContainer extends Component {
     this.props.fetchAndHandleCategories();
   }
 
+  onRetry = () => {
+    this.props.fetchAndHandleCategories();
+  }
+
   render() {
-    const { categories, isFetching, errorMessage, fetchAndHandleCategories } = this.props;
+    const { categories, isFetching, errorMessage } = this.props;
     return (
       <div>
         {isFetching && !errorMessage
           ? <Spinner />
           : <CategoriesList categories={categories} />
         }
-        {errorMessage && <ErrorMessage error={errorMessage} onRetry={fetchAndHandleCategories} />}
+        {errorMessage && <ErrorMessage error={errorMessage} onRetry={this.onRetry} />}
       </div>
     );
   }

@@ -5,7 +5,7 @@ const getPostIdsByCategory = (state, category) =>
 const getPostObjects = state => state.entities.posts;
 export const getPost = (state, postId) => state.entities.posts[postId];
 export const getIsFetching = (state, category) =>
-  (state.postsByCategory[category] ? state.postsByCategory[category].isFetching : false);
+  (state.postsByCategory[category] ? state.postsByCategory[category].isFetching : true);
 export const getErrorMessage = (state, category) =>
   (state.postsByCategory[category] ? state.postsByCategory[category].errorMessage : null);
 export const getPostVoteScore = (state, postId) => state.entities.posts[postId].voteScore;

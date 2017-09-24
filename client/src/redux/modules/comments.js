@@ -2,6 +2,7 @@ import { normalize } from 'normalizr';
 import { DELETE_POST } from './posts';
 import { commentListSchema, commentSchema } from '../schema';
 import { sort } from '../../utils/helpers';
+import postComments from './postComments';
 import {
   getCommentsByPost as apiGetCommentsByPost,
   voteComment as apiVoteComment,
@@ -10,10 +11,10 @@ import {
   deleteCommentById as apiDeleteComment,
 } from '../../utils/api';
 
-const FETCHING_COMMENTS = 'FETCHING_COMMENTS';
+export const FETCHING_COMMENTS = 'FETCHING_COMMENTS';
 export const FETCHING_COMMENTS_SUCCESS = 'FETCHING_COMMENTS_SUCCESS';
-const FETCHING_COMMENTS_ERROR = 'FETCHING_COMMENTS_ERROR';
-const VOTE_COMMENT = 'VOTE_COMMENT';
+export const FETCHING_COMMENTS_ERROR = 'FETCHING_COMMENTS_ERROR';
+export const VOTE_COMMENT = 'VOTE_COMMENT';
 export const ADD_NEW_COMMENT = 'ADD_NEW_COMMENT';
 export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
@@ -21,8 +22,9 @@ export const TOGGLE_COMMENT_ADD_FORM = 'TOGGLE_COMMENT_ADD_FORM';
 export const TOGGLE_COMMENT_EDIT_FORM = 'TOGGLE_COMMENT_EDIT_FORM';
 export const SORT_COMMENTS = 'SORT_COMMENTS';
 
-const fetchingComments = () => ({
+const fetchingComments = postId => ({
   type: FETCHING_COMMENTS,
+  postId,
 });
 
 const fetchingCommentsSuccess = (response, postId) => ({
@@ -31,9 +33,10 @@ const fetchingCommentsSuccess = (response, postId) => ({
   postId,
 });
 
-const fetchingCommentsError = error => ({
+const fetchingCommentsError = (error, postId) => ({
   type: FETCHING_COMMENTS_ERROR,
-  error,
+  error: 'Error fetching comments',
+  postId,
 });
 
 const addNewComment = (response, postId) => ({
@@ -77,13 +80,13 @@ export const sortComments = (sortedComments, parentId) => ({
 });
 
 export const fetchAndHandleComments = postId => (dispatch) => {
-  dispatch(fetchingComments());
+  dispatch(fetchingComments(postId));
   apiGetCommentsByPost(postId)
     .then((response) => {
       const normalizedResponse = normalize(response, commentListSchema);
       dispatch(fetchingCommentsSuccess(normalizedResponse, postId));
     },
-    error => dispatch(fetchingCommentsError(error)));
+    error => dispatch(fetchingCommentsError(error, postId)));
 };
 
 export const saveNewComment = (comment, parentId) => (dispatch) => {
@@ -198,6 +201,26 @@ export default function comments(state = {}, action) {
           isCommentEditFormOpen: !state[action.commentId].isCommentEditFormOpen,
         },
       };
+    default:
+      return state;
+  }
+}
+
+export function commentsByPost(state = {}, action) {
+  switch (action.type) {
+    case FETCHING_COMMENTS:
+    case FETCHING_COMMENTS_SUCCESS:
+    case FETCHING_COMMENTS_ERROR:
+    case ADD_NEW_COMMENT:
+    case DELETE_COMMENT:
+      return {
+        ...state,
+        [action.postId]: postComments(action.postId)(state[action.postId], action),
+      };
+    case DELETE_POST: {
+      const { [action.postId]: omit, ...rest } = state;
+      return { ...rest };
+    }
     default:
       return state;
   }
