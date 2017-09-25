@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
+import { FaUser } from 'react-icons/lib/fa';
 import { convertUnixTimestampToDate } from '../../utils/helpers';
 import PostFooterContainer from '../../containers/PostFooterContainer';
 import PostVoteScore from '../../containers/PostVoteScore';
@@ -34,14 +35,18 @@ const Post = ({
         </h2>
       </div>
       <div className="post-details">
-        <span>{`Posted by ${author} on ${convertUnixTimestampToDate(timestamp)}`}</span>
+        <span>{'Posted by '}<FaUser />{` ${author} on ${convertUnixTimestampToDate(timestamp)}`}</span>
       </div>
       { showBody && (
         <div className="post-body">
           <p>{body}</p>
         </div>)
       }
-      <PostFooterContainer postId={id} category={category} />
+      <PostFooterContainer
+        postId={id}
+        category={category}
+        showBody={showBody}
+      />
     </div>
   </div>
 );

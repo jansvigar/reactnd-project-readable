@@ -72,6 +72,12 @@ button, span {
   font-weight: 700;
 }
 
+.app-header h1 a {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
 .app-container {
   width: 80%;
   max-width: 1080px;
@@ -102,6 +108,10 @@ button, span {
   padding: 20px;
   text-align: center;
   font-size: 1em;
+}
+
+.app-footer a {
+  font-size: 1.5em;
 }
 
 /* Posts */

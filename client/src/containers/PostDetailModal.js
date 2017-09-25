@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Modal from '../components/Modal/Modal';
 import Post from '../components/Post/Post';
-import { openModal, closeModal } from '../redux/modules/modal';
+import { openPostModal, closePostModal } from '../redux/modules/modal';
 import { getPost } from '../redux/selectors/posts';
+import { getPostModalOpen } from '../redux/selectors/ui';
 import CommentsList from './CommentsList';
 import { redirectToReferrerOrHome } from '../utils/helpers';
 
 class PostDetailModal extends Component {
   componentDidMount() {
-    this.props.openModal();
+    this.props.openPostModal();
   }
   handleCloseModal = () => {
-    this.props.closeModal();
+    this.props.closePostModal();
     redirectToReferrerOrHome(this.props.location.state, this.props.history);
   }
 
@@ -23,15 +24,15 @@ class PostDetailModal extends Component {
         <Modal
           contentLabel="Post Detail Modal"
           closeModal={this.handleCloseModal}
-          isOpen={this.props.isOpen}
+          isOpen={this.props.postModalOpen}
         >
           <div>
-            {this.props.post && (
+            {this.props.post ? (
               <div>
                 <Post {...this.props.post} showBody />
                 <CommentsList postId={this.props.post.id} />
               </div>
-            )}
+            ) : <p>{'The post is not found. It may have been removed or moved to another category'}</p>}
           </div>
         </Modal>
       </div>
@@ -40,9 +41,9 @@ class PostDetailModal extends Component {
 }
 
 PostDetailModal.propTypes = {
-  openModal: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired,
+  openPostModal: PropTypes.func.isRequired,
+  closePostModal: PropTypes.func.isRequired,
+  postModalOpen: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   post: PropTypes.object,
@@ -51,12 +52,12 @@ PostDetailModal.propTypes = {
 function mapStateToProps(state, ownProps) {
   const postId = ownProps.match.params.id;
   return {
-    isOpen: state.ui.modal.isOpen,
+    postModalOpen: getPostModalOpen(state),
     post: getPost(state, postId),
   };
 }
 
 export default connect(
   mapStateToProps,
-  { openModal, closeModal },
+  { openPostModal, closePostModal },
 )(PostDetailModal);

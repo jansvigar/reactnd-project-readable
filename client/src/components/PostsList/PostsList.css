@@ -1,3 +1,7 @@
+.list-posts p {
+  margin: 10px;
+  font-size: 1.2em;
+}
 .add-new-post {
   position: fixed;
   bottom: 25px;

@@ -82,7 +82,9 @@ export const fetchAndHandlePosts = category => (dispatch) => {
   const getPosts = category === 'all' ? apiGetAllPosts : apiGetPostsByCategory;
   getPosts(category)
     .then((response) => {
-      const normalizedResponse = normalize(response, postListSchema);
+      const sortPostsBy = sort(response);
+      const sortedResponse = sortPostsBy('voteScore').reverse();
+      const normalizedResponse = normalize(sortedResponse, postListSchema);
       dispatch(fetchingPostsSuccess(normalizedResponse, category));
       normalizedResponse.result.map(postId => dispatch(fetchAndHandleComments(postId)));
     },
@@ -244,7 +246,16 @@ export default function posts(state = {}, action) {
   }
 }
 
-export function postsByCategory(state = {}, action) {
+const categoryPostsInitialState = {
+  all: {
+    ids: [],
+    isFetching: false,
+    errorMessage: null,
+    shouldFetch: true,
+  },
+};
+
+export function postsByCategory(state = categoryPostsInitialState, action) {
   switch (action.type) {
     case FETCHING_POSTS:
     case FETCHING_POSTS_SUCCESS:

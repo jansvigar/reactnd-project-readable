@@ -4,12 +4,19 @@ import { Link } from 'react-router-dom';
 import {
   FaCommentingO, FaEdit,
   FaTimesCircle } from 'react-icons/lib/fa';
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import './PostFooter.css';
 
 const PostFooter = (props) => {
   const onDelete = (event) => {
     event.preventDefault();
+    props.openConfirmDeletePostModal();
+    // props.disablePost(props.postId, props.category, props.comments);
+  };
+  const handleDelete = () => {
     props.disablePost(props.postId, props.category, props.comments);
+    props.closeConfirmDeletePostModal();
+    if (props.showBody) props.history.push('/');
   };
   return (
     <div className="post-footer">
@@ -32,6 +39,12 @@ const PostFooter = (props) => {
           {'Delete'}
         </a>
       </span>
+      <ConfirmModal
+        message="Are you sure you want to delete this post?"
+        isOpen={props.confirmDeletePostModalOpen}
+        onConfirm={handleDelete}
+        onClose={props.closeConfirmDeletePostModal}
+      />
     </div>
   );
 };
@@ -41,8 +54,13 @@ PostFooter.propTypes = {
   postId: PropTypes.string,
   category: PropTypes.string,
   disablePost: PropTypes.func,
+  confirmDeletePostModalOpen: PropTypes.bool,
+  openConfirmDeletePostModal: PropTypes.func,
+  closeConfirmDeletePostModal: PropTypes.func,
+  showBody: PropTypes.bool,
   match: PropTypes.object,
   location: PropTypes.object,
+  history: PropTypes.object,
 };
 
 export default PostFooter;

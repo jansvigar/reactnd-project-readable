@@ -83,7 +83,9 @@ export const fetchAndHandleComments = postId => (dispatch) => {
   dispatch(fetchingComments(postId));
   apiGetCommentsByPost(postId)
     .then((response) => {
-      const normalizedResponse = normalize(response, commentListSchema);
+      const sortCommentsBy = sort(response);
+      const sortedResponse = sortCommentsBy('voteScore').reverse();
+      const normalizedResponse = normalize(sortedResponse, commentListSchema);
       dispatch(fetchingCommentsSuccess(normalizedResponse, postId));
     },
     error => dispatch(fetchingCommentsError(error, postId)));
@@ -190,7 +192,9 @@ export default function comments(state = {}, action) {
       };
     case DELETE_POST: {
       const newState = { ...state };
-      action.comments.forEach(comment => delete newState[comment]);
+      if (action.comments.length > 0) {
+        action.comments.forEach(comment => delete newState[comment]);
+      }
       return newState;
     }
     case TOGGLE_COMMENT_EDIT_FORM:

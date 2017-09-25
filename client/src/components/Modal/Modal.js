@@ -31,14 +31,14 @@ const Modal = props => (
     contentLabel={props.contentLabel}
     style={customStyles}
   >
-    <span
+    {!props.hideCloseButton && (<span
       role="button"
       tabIndex="0"
       className="modal-close-button"
       onClick={props.closeModal}
     >
       <FaClose />
-    </span>
+    </span>)}
     {props.children}
   </ReactModal>
 );
@@ -46,8 +46,9 @@ const Modal = props => (
 Modal.propTypes = {
   children: PropTypes.element,
   isOpen: PropTypes.bool.isRequired,
-  closeModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func,
   contentLabel: PropTypes.string.isRequired,
+  hideCloseButton: PropTypes.bool,
 };
 
 export default Modal;

@@ -1,0 +1,29 @@
+.confirm-modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.confirm-modal-message {
+  font-size: 1.4em;
+}
+
+.confirm-modal-button-group>* {
+  margin: 10px;
+}
+
+.confirm-modal-button-group button {
+    white-space: nowrap;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 1.2em;
+    color: #fff;
+    background-image: linear-gradient(#fff,#d5d5d5);
+    border: 1px solid #d5d5d5;
+    color: #000;
+    cursor: pointer;
+  }
+
+.confirm-modal button:hover {
+      background-image: linear-gradient(#fff,#eee);
+  }

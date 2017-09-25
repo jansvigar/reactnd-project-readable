@@ -89,11 +89,6 @@ hr {
   cursor: pointer;
 }
 
-.post-form>div button {
-  margin: 10px;
-  cursor: pointer;
-}
-
 .post-form>div button[type=submit] {
     white-space: nowrap;
     display: inline-block;

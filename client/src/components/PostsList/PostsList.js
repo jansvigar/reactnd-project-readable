@@ -17,7 +17,7 @@ const PostsList = ({ posts, category, handleSort, location, match }) => (
       {posts.length > 0 ? posts.map(post => (
         <Post key={post.id} {...post} />
       ))
-        : <div>There are no posts to display</div>}
+        : <p>There are no posts to display</p>}
 
     </div>
     <div className="add-new-post">

@@ -7,7 +7,6 @@ const SortList = (props) => {
   };
   return (
     <select className="sort-list" onChange={onSort}>
-      <option value="">-- Sort By --</option>
       <option value="score_desc">Score: Highest to lowest</option>
       <option value="score_asc">Score: Lowest to highest</option>
       <option value="timestamp_desc">Posted Date: Newest to oldest</option>
