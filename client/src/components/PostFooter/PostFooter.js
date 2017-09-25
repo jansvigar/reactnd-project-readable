@@ -51,16 +51,16 @@ const PostFooter = (props) => {
 
 PostFooter.propTypes = {
   comments: PropTypes.array,
-  postId: PropTypes.string,
-  category: PropTypes.string,
-  disablePost: PropTypes.func,
+  postId: PropTypes.string.isRequired,
+  category: PropTypes.string.isRequired,
+  disablePost: PropTypes.func.isRequired,
   confirmDeletePostModalOpen: PropTypes.bool,
   openConfirmDeletePostModal: PropTypes.func,
   closeConfirmDeletePostModal: PropTypes.func,
   showBody: PropTypes.bool,
-  match: PropTypes.object,
-  location: PropTypes.object,
-  history: PropTypes.object,
+  match: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default PostFooter;

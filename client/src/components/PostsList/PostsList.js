@@ -33,8 +33,8 @@ PostsList.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.object).isRequired,
   category: PropTypes.string.isRequired,
   handleSort: PropTypes.func.isRequired,
-  location: PropTypes.object,
-  match: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
 export default PostsList;

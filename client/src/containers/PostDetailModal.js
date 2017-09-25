@@ -27,12 +27,12 @@ class PostDetailModal extends Component {
           isOpen={this.props.postModalOpen}
         >
           <div>
-            {this.props.post ? (
+            {this.props.post && (
               <div>
                 <Post {...this.props.post} showBody />
                 <CommentsList postId={this.props.post.id} />
               </div>
-            ) : <p>{'The post is not found. It may have been removed or moved to another category'}</p>}
+            ) }
           </div>
         </Modal>
       </div>

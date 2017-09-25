@@ -59,8 +59,8 @@ Post.propTypes = {
   timestamp: PropTypes.number.isRequired,
   body: PropTypes.string.isRequired,
   showBody: PropTypes.bool,
-  location: PropTypes.object,
-  match: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
 export default withRouter(Post);

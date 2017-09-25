@@ -8,10 +8,10 @@ import {
 import CommentVoteScore from '../../containers/CommentVoteScore';
 import CommentForm from '../CommentForm/CommentForm';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import { toggleCommentEditForm, updateComment, disableComment } from '../../redux/modules/comments';
-import { getIsCommentEditFormOpen } from '../../redux/selectors/comments';
-import { getConfirmDeleteCommentModalOpen } from '../../redux/selectors/ui';
-import { openConfirmDeleteCommentModal, closeConfirmDeleteCommentModal } from '../../redux/modules/modal';
+import * as fromComments from '../../redux/modules/comments';
+import * as commentsSelector from '../../redux/selectors/comments';
+import * as uiSelector from '../../redux/selectors/ui';
+import * as fromModal from '../../redux/modules/modal';
 import { convertUnixTimestampToDate } from '../../utils/helpers';
 import './Comment.css';
 
@@ -75,16 +75,16 @@ Comment.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    isCommentEditFormOpen: getIsCommentEditFormOpen(state, ownProps.comment.id),
-    confirmDeleteCommentModalOpen: getConfirmDeleteCommentModalOpen(state),
+    isCommentEditFormOpen: commentsSelector.getIsCommentEditFormOpen(state, ownProps.comment.id),
+    confirmDeleteCommentModalOpen: uiSelector.getConfirmDeleteCommentModalOpen(state),
   };
 }
 
 export default connect(
   mapStateToProps,
-  { toggleCommentEditForm,
-    updateComment,
-    disableComment,
-    openConfirmDeleteCommentModal,
-    closeConfirmDeleteCommentModal },
+  { toggleCommentEditForm: fromComments.toggleCommentEditForm,
+    updateComment: fromComments.updateComment,
+    disableComment: fromComments.disableComment,
+    openConfirmDeleteCommentModal: fromModal.openConfirmDeleteCommentModal,
+    closeConfirmDeleteCommentModal: fromModal.closeConfirmDeleteCommentModal },
 )(Comment);
