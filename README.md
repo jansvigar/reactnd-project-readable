@@ -18,9 +18,8 @@ npm install //install packages
 npm start //launch readable app
 ```
 
-##Contributing
+## Contributing
 At this time, this project is not open for contribution. The purpose of this project is to complete Udacity React Redux Course.
 
-##License
-
+## License
 This project is under the MIT License, see License.md
