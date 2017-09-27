@@ -1,5 +1,5 @@
 # Readable App Project
-This is Udacity React project by Jan Vigar.
+This is Udacity React project by Jan Vigar. https://readable-jvigar.herokuapp.com/
 
 ## Installation
 
